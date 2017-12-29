@@ -1,0 +1,35 @@
+
+.footer{
+  height: 70px;
+  width: 350px;
+  margin: 0 auto;
+
+  display: flex;
+  justify-content: flex-end;
+
+  position: relative;
+
+  background-color: #00CC66;
+}
+
+.footer h4 {
+
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+
+  padding: 15px;
+}
+
+.footer > figure {
+  height: 70px;
+  width: 100px;
+
+  position: absolute;
+  top: -30px;
+  left: 0px;
+  transform: rotate(10deg);
+
+  border-radius: 15px;
+}

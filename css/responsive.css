@@ -1,0 +1,150 @@
+
+
+@media screen and (min-width: 620px) {
+
+    .header-nav, .sudoku, .footer, .sudoku-grid{
+      width: 600px;
+    }
+    .header-nav{
+      height: 75px;
+      font-size: 25px;
+    }
+
+    .sudoku-tag{
+      left: -30px;
+      top: 50px;
+      height: 65px;
+      width: 150px;
+      transform: rotate(-25deg);
+    }
+
+    .sudoku-tag > span {
+      font-size: 18px;
+    }
+
+    .sudoku {
+      height: 800px;
+    }
+
+    .sudoku-grid{
+      height: 540px;
+    }
+
+    .sudoku-grid > ul {
+      width: 540px;
+      height: 60px;
+    }
+
+    .sudoku-grid > ul > li{
+      width: 60px;
+      height: 100%;
+      font-size: 25px;
+
+    }
+
+    .footer > figure {
+      height: 120px;
+      width: auto;
+      top: -60px;
+      left: 0px;
+    }
+}
+
+
+@media screen and (min-width: 920px) {
+
+  .header-nav, .sudoku, .footer, .sudoku-grid{
+    width: 900px;
+  }
+
+  .header-nav{
+    height: 75px;
+    font-size: 30px;
+  }
+
+  .sudoku-tag{
+    left: -20px;
+    height: 75px;
+    width: 200px;
+    transform: rotate(-25deg);
+  }
+
+  .sudoku-tag > span {
+    font-size: 30px;
+  }
+
+  .sudoku {
+    height: 900px;
+  }
+
+  .sudoku-grid{
+    height: 650px;
+  }
+
+  .sudoku-grid > ul {
+    width: 650px;
+    height: 72px;
+  }
+
+  .sudoku-grid > ul > li{
+    width: 72px;
+    height: 100%;
+    font-size: 25px;
+  }
+
+  .footer h4 {
+    font-size: 18px;
+  }
+}
+
+@media screen and (min-width: 1220px) {
+
+  .header-nav, .sudoku, .footer, .sudoku-grid{
+    width: 1200px;
+  }
+
+  .header-nav{
+    height: 75px;
+    font-size: 30px;
+  }
+
+  .sudoku-tag{
+    left: 0px;
+    height: 100px;
+    width: 300px;
+    transform: rotate(-25deg);
+
+  }
+
+  .sudoku-tag > span {
+    font-size: 45px;
+  }
+
+  .sudoku {
+    height: 1000px;
+  }
+
+  .sudoku-grid > ul {
+    width: 784px;
+    height: 85px;
+  }
+
+  .sudoku-grid > ul > li{
+    width: 85px;
+    height: 100%;
+    font-size: 30px;
+
+  }
+
+  .footer > figure {
+    height: 150px;
+    width: auto;
+    top: -80px;
+    left: 0px;
+  }
+
+  .footer h4 {
+    font-size: 25px;
+  }
+
+}
