@@ -2,14 +2,27 @@ const solvedSudoku = require("./../existing_sudoku/solved_sudokus.js")
 const Tile = require("./tile.js")
 const Util = require("./util.js")
 
+
+// Purpose of this class:
+// 1) Select a grid solved ( grid form: "1233434534...") if none provided
+// 2) Build tile: ( grid  form: [Tile1, Tile2, etc...])
+// 3) change grid form to get lines (grid form: [[line1], [line2], etc...])
+// 4) Insert inputsVal (which is a tile of value 0) according to
+//    the number of inputs we want( which define the difficulty of the game)
+//    then save the previous val to display the hint (this.inputsVal = {1: 2, 3:0, 7:3 etc...})
+      // At this step: we also save the available positions
+      // (which are the positions of the tile of value 0)
+// 5) Provide a getValues() to get the grid form: [[1,3,4,..], [9,4,3, ...], ...]
+
+
 class Grid {
 
   constructor(difficulty, grid = null){
-    this.availablePosistions = [];
 
     if(grid !== null){
       this.grid = grid;
     } else {
+      this.availablePosistions = [];
       this.inputsVal = {
         "1": 0,
         "2": 0,
@@ -45,6 +58,7 @@ class Grid {
     return gridTile;
   }
 
+// set the difficulty of the game
 
   insertInputTile(number){
     let positions = this.allPositions();
@@ -80,6 +94,7 @@ class Grid {
       }
     return lineGrid;
   }
+// provide a set of all positions of the grid
 
   allPositions(){
     let positions = [];

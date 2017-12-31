@@ -1,5 +1,9 @@
 const Tile = require("./tile.js");
 
+// purpose of this class:
+// set of method created and use through all the different classes of the game
+
+
 const Util = {
 
   merge: (left, right) => {
@@ -38,13 +42,12 @@ const Util = {
                             },
 
   similar: (arr1, arr2) =>  {
-                             let result = true;
                              arr1.forEach((val, index)=> {
                                 if(arr2[index] !== val){
-                                  result = false
+                                  return false;
                                 }
                               })
-                              return result;
+                              return true;
                             },
 
   transpose: (grid) =>      {

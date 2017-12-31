@@ -88,7 +88,8 @@ class Board {
 
     if(!tile.blocked && this.valid(val)){
       tile.val = val;
-      // this.inputsVal[val] -= 1;
+    } else if ( !val !== val) {
+      alert("Please, enter a value between 0 and 9.")
     }
   }
 
@@ -157,17 +158,19 @@ class Board {
 
   check(line){
     const b = Util.mergeSort(line);
+      if (b[0] === 0) {
+        return false;
+      }
     return Util.similar(b , [1,2,3,4,5,6,7,8,9]);
   }
 
   checkLines(grid1){
-    let result = true
     grid1.forEach((line) => {
       if (!this.check(line)) {
-        result = false;
+        return false;
       }
     })
-    return result;
+    return true;
   }
 }
 
@@ -179,6 +182,11 @@ module.exports = Board;
 /***/ (function(module, exports) {
 
 
+// purpose of this class:
+// Well it s a tile object which hold three characteristics:
+  //  1) tile is blocked (meaning we can t change the value of the tile)
+  //  2) the value of the tile
+   // 3) possible values of this tile according to the grid (this.marks)
 
 class Tile {
   constructor(val, blocked = true){
@@ -196,6 +204,10 @@ module.exports = Tile;
 /***/ (function(module, exports, __webpack_require__) {
 
 const Tile = __webpack_require__(1);
+
+// purpose of this class:
+// set of method created and use through all the different classes of the game
+
 
 const Util = {
 
@@ -235,13 +247,12 @@ const Util = {
                             },
 
   similar: (arr1, arr2) =>  {
-                             let result = true;
                              arr1.forEach((val, index)=> {
                                 if(arr2[index] !== val){
-                                  result = false
+                                  return false;
                                 }
                               })
-                              return result;
+                              return true;
                             },
 
   transpose: (grid) =>      {
@@ -339,6 +350,11 @@ module.exports = Util;
   const BoardSolver = __webpack_require__(4)
   const SudokuSolver = __webpack_require__(9)
 
+// purpose of this class:
+  // 1) Get one board
+  // 2) Get the solution of the board
+ //  3) save the inputsVal to display the hint (ex: {1: 3, 2:0, 3: 2})
+
 class Sudoku {
   constructor(difficulty = 15){
     this.board = new Board(difficulty);
@@ -358,6 +374,14 @@ module.exports = Sudoku;
 
 const Util = __webpack_require__(2)
 const Board = __webpack_require__(0)
+
+// purpose of this class:
+// 1) take the existing board and create a new Board with a deep copy of the previous grid
+// 2) update the board by calculating the possible values for each tile of value 0(the marks):
+   // loop through each available positions and update the tile with possible values
+// 3) update the board if there is a unique possible value on one tile 
+  // (tile is updated and available positions as well)
+// 4) Check after update if the board has a solution through (this.solvable)
 
 class BoardSolver{
 
@@ -501,6 +525,10 @@ $(()=> {
 
 const Sudoku = __webpack_require__(3)
 
+// purpose of this class:
+  // 1) Set a new grid build with <ul> and <li>
+  // 2) create all the events of the game and menu
+
 class SudokuView {
   constructor(rootEl, game){
     this.$el = $(rootEl);
@@ -517,7 +545,9 @@ class SudokuView {
 
     this.initiatePage();
     this.$inputs = $(".sudoku-grid input[type= text]");
-    this.$inputs.on("input", this.handleChange.bind(this));
+    this.$inputs.change(this.handleChange.bind(this));
+
+    this.$inputs.on("click", this.handleSelect.bind(this));
   }
 
   initiatePage(){
@@ -526,16 +556,17 @@ class SudokuView {
       let $ul = $("<ul></ul>");
       line.forEach( (value, col)=> {
         let $li = $("<li></li>");
+        $li.addClass(`li-${row}-${col}`);
+        $li.addClass('sudoku-grid-tile');
           if(value !==0 ){
             $li.append(`${value}`);
-            $li.css("background-color", "#CCC");
+            $li.addClass("tile-blocked");
           } else{
             let $input = $("<input></input>");
                 $input.attr("type", "text");
                 $input.attr("value", "");
             $li.append($input);
           }
-        $li.addClass(`li-${row}-${col}`);
         $ul.append($li);
       })
       $sudokuGrid.append($ul);
@@ -596,6 +627,7 @@ class SudokuView {
     $ul.addClass("hint");
     for(let i = 1; i < 10; i++){
       let $li = $("<li></li>");
+          $li.addClass("sudoku-grid-tile");
       let num = this.game.inputsVal[i];
       $li.html(`num${i} ${num}`)
       $ul.append($li);
@@ -622,10 +654,14 @@ class SudokuView {
   }
 
   updateInputsVal(previousVal, value){
-    if(previousVal !== 0){
-      this.game.inputsVal[previousVal] += 1
+    if( value !== value ){
+      this.game.inputsVal[previousVal] += 1;
+    } else if(this.game.board.valid(previousVal) && this.game.board.valid(value)){
+      this.game.inputsVal[previousVal] += 1;
+      this.game.inputsVal[value] -= 1;
+    }else if(this.game.board.valid(value)){
+      this.game.inputsVal[value] -= 1;
     }
-    this.game.inputsVal[value] -= 1;
   }
 
   updateHint(){
@@ -635,6 +671,28 @@ class SudokuView {
       $ul.remove();
       this.buildHint();
     }
+  }
+
+  handleSelect(event){
+    const $selectedLi = $(".tile-selected");
+    if($selectedLi.length !== 0){
+      this.removeSelectedClass();
+    }
+    const $li = $(event.currentTarget).parent();
+    const col = $li.attr("class")[5];
+    const $ul = $li.parent();
+    const $liLines = $ul.children();
+    $liLines.addClass("tile-selected");
+    const $liCol = [];
+    for(let index=0; index < 9; index++){
+      const $li = $(".sudoku-grid").find(`.li-${index}-${col}`)
+            $li.addClass("tile-selected");
+    }
+  }
+
+  removeSelectedClass(){
+    const $selectedLi = $(".tile-selected");
+    $selectedLi.removeClass("tile-selected");
   }
 
   getPos(className){
@@ -660,18 +718,18 @@ class SudokuView {
     grid.forEach((line, row)=> {
       line.forEach((value, col) => {
         let $li = $(`.li-${row}-${col}`);
-
-        $li.css("background-color", "#F3F3F3");
+        $li.removeClass("tile-blocked");
+        $li.removeClass("tile-selected");
         $li.html('');
         if(value !== 0 ){
           $li.html(`${value}`);
-          $li.addClass("blocked");
-          $li.css("background-color", "#CCC");
+          $li.addClass("tile-blocked");
         } else{
           let $input = $("<input></input>");
               $input.attr("type", "text");
               $input.attr("value", "");
-              $input.bind("input", this.handleChange.bind(this));
+              $input.change(this.handleChange.bind(this));
+              $input.on("click", this.handleSelect.bind(this));
           $li.append($input);
         }
       })
@@ -692,14 +750,27 @@ const solvedSudoku = __webpack_require__(8)
 const Tile = __webpack_require__(1)
 const Util = __webpack_require__(2)
 
+
+// Purpose of this class:
+// 1) Select a grid solved ( grid form: "1233434534...") if none provided
+// 2) Build tile: ( grid  form: [Tile1, Tile2, etc...])
+// 3) change grid form to get lines (grid form: [[line1], [line2], etc...])
+// 4) Insert inputsVal (which is a tile of value 0) according to
+//    the number of inputs we want( which define the difficulty of the game)
+//    then save the previous val to display the hint (this.inputsVal = {1: 2, 3:0, 7:3 etc...})
+      // At this step: we also save the available positions
+      // (which are the positions of the tile of value 0)
+// 5) Provide a getValues() to get the grid form: [[1,3,4,..], [9,4,3, ...], ...]
+
+
 class Grid {
 
   constructor(difficulty, grid = null){
-    this.availablePosistions = [];
 
     if(grid !== null){
       this.grid = grid;
     } else {
+      this.availablePosistions = [];
       this.inputsVal = {
         "1": 0,
         "2": 0,
@@ -735,6 +806,7 @@ class Grid {
     return gridTile;
   }
 
+// set the difficulty of the game
 
   insertInputTile(number){
     let positions = this.allPositions();
@@ -770,6 +842,7 @@ class Grid {
       }
     return lineGrid;
   }
+// provide a set of all positions of the grid
 
   allPositions(){
     let positions = [];
@@ -1002,6 +1075,29 @@ module.exports = solvedSudokus;
 const BoardSolver = __webpack_require__(4)
 const Board = __webpack_require__(0)
 const Tile = __webpack_require__(1)
+
+// Purpose of this class:
+// 1) Accept a boardSolver
+// 2) define the children of this boardSolver:
+        // 2.1) get the next available position of the current boardSolver
+        // 2.2) get the tile on the position
+        // 2.3) Loop through each available marks of the tile
+        // 2.4) Create a new boardSolver for each mark
+             // and update the tile of the new board Solver with the mark
+        // 2.5) If the new boardSolver has a solution: push to children
+// 3) build a stack with initial value: boardSolver at creation
+// 4) pop one element of the stack: return the board if board is solved
+   // if not get the children of the current board and push on the stack
+// 5) keep going while the stack is not empty or if we find a solution
+
+// Pros and cons:
+  // Pros: boardSolver are already simpilied (singeton value updated)
+        // which accelerate the process of finding a solution.
+ //  Cons: we create  new board for each tile.marks
+        // which could be a lot of boards on high difficulty (bad space complexity and
+        // time complexity on the worse case scenario)
+        // checking if the board is solved add a lot of extra step:
+        // there should be a way to do that faster
 
 class SudokuSolver {
 

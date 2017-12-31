@@ -1,5 +1,9 @@
 const Sudoku = require("./sudoku.js")
 
+// purpose of this class:
+  // 1) Set a new grid build with <ul> and <li>
+  // 2) create all the events of the game and menu
+
 class SudokuView {
   constructor(rootEl, game){
     this.$el = $(rootEl);
@@ -16,7 +20,9 @@ class SudokuView {
 
     this.initiatePage();
     this.$inputs = $(".sudoku-grid input[type= text]");
-    this.$inputs.on("input", this.handleChange.bind(this));
+    this.$inputs.change(this.handleChange.bind(this));
+
+    this.$inputs.on("click", this.handleSelect.bind(this));
   }
 
   initiatePage(){
@@ -25,16 +31,17 @@ class SudokuView {
       let $ul = $("<ul></ul>");
       line.forEach( (value, col)=> {
         let $li = $("<li></li>");
+        $li.addClass(`li-${row}-${col}`);
+        $li.addClass('sudoku-grid-tile');
           if(value !==0 ){
             $li.append(`${value}`);
-            $li.css("background-color", "#CCC");
+            $li.addClass("tile-blocked");
           } else{
             let $input = $("<input></input>");
                 $input.attr("type", "text");
                 $input.attr("value", "");
             $li.append($input);
           }
-        $li.addClass(`li-${row}-${col}`);
         $ul.append($li);
       })
       $sudokuGrid.append($ul);
@@ -95,6 +102,7 @@ class SudokuView {
     $ul.addClass("hint");
     for(let i = 1; i < 10; i++){
       let $li = $("<li></li>");
+          $li.addClass("sudoku-grid-tile");
       let num = this.game.inputsVal[i];
       $li.html(`num${i} ${num}`)
       $ul.append($li);
@@ -121,10 +129,14 @@ class SudokuView {
   }
 
   updateInputsVal(previousVal, value){
-    if(previousVal !== 0){
-      this.game.inputsVal[previousVal] += 1
+    if( value !== value ){
+      this.game.inputsVal[previousVal] += 1;
+    } else if(this.game.board.valid(previousVal) && this.game.board.valid(value)){
+      this.game.inputsVal[previousVal] += 1;
+      this.game.inputsVal[value] -= 1;
+    }else if(this.game.board.valid(value)){
+      this.game.inputsVal[value] -= 1;
     }
-    this.game.inputsVal[value] -= 1;
   }
 
   updateHint(){
@@ -134,6 +146,28 @@ class SudokuView {
       $ul.remove();
       this.buildHint();
     }
+  }
+
+  handleSelect(event){
+    const $selectedLi = $(".tile-selected");
+    if($selectedLi.length !== 0){
+      this.removeSelectedClass();
+    }
+    const $li = $(event.currentTarget).parent();
+    const col = $li.attr("class")[5];
+    const $ul = $li.parent();
+    const $liLines = $ul.children();
+    $liLines.addClass("tile-selected");
+    const $liCol = [];
+    for(let index=0; index < 9; index++){
+      const $li = $(".sudoku-grid").find(`.li-${index}-${col}`)
+            $li.addClass("tile-selected");
+    }
+  }
+
+  removeSelectedClass(){
+    const $selectedLi = $(".tile-selected");
+    $selectedLi.removeClass("tile-selected");
   }
 
   getPos(className){
@@ -159,18 +193,18 @@ class SudokuView {
     grid.forEach((line, row)=> {
       line.forEach((value, col) => {
         let $li = $(`.li-${row}-${col}`);
-
-        $li.css("background-color", "#F3F3F3");
+        $li.removeClass("tile-blocked");
+        $li.removeClass("tile-selected");
         $li.html('');
         if(value !== 0 ){
           $li.html(`${value}`);
-          $li.addClass("blocked");
-          $li.css("background-color", "#CCC");
+          $li.addClass("tile-blocked");
         } else{
           let $input = $("<input></input>");
               $input.attr("type", "text");
               $input.attr("value", "");
-              $input.bind("input", this.handleChange.bind(this));
+              $input.change(this.handleChange.bind(this));
+              $input.on("click", this.handleSelect.bind(this));
           $li.append($input);
         }
       })

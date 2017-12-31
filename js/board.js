@@ -19,7 +19,8 @@ class Board {
 
     if(!tile.blocked && this.valid(val)){
       tile.val = val;
-      // this.inputsVal[val] -= 1;
+    } else if ( !val !== val) {
+      alert("Please, enter a value between 0 and 9.")
     }
   }
 
@@ -88,17 +89,19 @@ class Board {
 
   check(line){
     const b = Util.mergeSort(line);
+      if (b[0] === 0) {
+        return false;
+      }
     return Util.similar(b , [1,2,3,4,5,6,7,8,9]);
   }
 
   checkLines(grid1){
-    let result = true
     grid1.forEach((line) => {
       if (!this.check(line)) {
-        result = false;
+        return false;
       }
     })
-    return result;
+    return true;
   }
 }
 

@@ -9,7 +9,7 @@
 
   position: relative;
 
-  background-color: #00CC66;
+  background-color: #89fcb7;
 }
 
 .footer h4 {
@@ -23,13 +23,13 @@
 }
 
 .footer > figure {
-  height: 70px;
-  width: 100px;
+  height: 150px;
+  width: 100%;
 
   position: absolute;
-  top: -30px;
-  left: 0px;
-  transform: rotate(10deg);
+  top: -50px;
+  left: -40px;
+  /*transform: rotate(10deg);*/
 
   border-radius: 15px;
 }

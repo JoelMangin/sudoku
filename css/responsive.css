@@ -35,7 +35,7 @@
       height: 60px;
     }
 
-    .sudoku-grid > ul > li{
+    .sudoku-grid-tile{
       width: 60px;
       height: 100%;
       font-size: 25px;
@@ -43,10 +43,9 @@
     }
 
     .footer > figure {
-      height: 120px;
-      width: auto;
-      top: -60px;
-      left: 0px;
+      height: 250px;
+      top: -120px;
+      left: -60px;
     }
 }
 
@@ -86,7 +85,7 @@
     height: 72px;
   }
 
-  .sudoku-grid > ul > li{
+  .sudoku-grid-tile{
     width: 72px;
     height: 100%;
     font-size: 25px;
@@ -129,7 +128,7 @@
     height: 85px;
   }
 
-  .sudoku-grid > ul > li{
+  .sudoku-grid-tile{
     width: 85px;
     height: 100%;
     font-size: 30px;
@@ -137,10 +136,9 @@
   }
 
   .footer > figure {
-    height: 150px;
-    width: auto;
-    top: -80px;
-    left: 0px;
+    height: 300px;
+    top: -170px;
+    left: -70px;
   }
 
   .footer h4 {
