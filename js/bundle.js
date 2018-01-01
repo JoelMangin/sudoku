@@ -60,519 +60,57 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 5);
+/******/ 	return __webpack_require__(__webpack_require__.s = 4);
 /******/ })
 /************************************************************************/
 /******/ ([
-/* 0 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const Grid = __webpack_require__(7)
-const Util = __webpack_require__(2)
-
-class Board {
-
-  constructor(difficulty, grid = null){
-    this.difficulty = difficulty;
-    this.boardGrid = new Grid(difficulty, grid);
-    this.inputsVal = this.boardGrid.inputsVal;
-  }
-
-  getValues(){
-    return this.boardGrid.getValues();
-  }
-
-  updateVal(pos, val){
-
-    let tile = this.getTile(pos);
-
-    if(!tile.blocked && this.valid(val)){
-      tile.val = val;
-    } else if ( !val !== val) {
-      alert("Please, enter a value between 0 and 9.")
-    }
-  }
-
-  getTile(pos){
-    let x = pos[0];
-    let y = pos[1];
-    return this.boardGrid.grid[x][y];
-  }
-
-  valid(val){
-    return Number.isInteger(val) && val >= 0 && val <= 9;
-  }
-
-  // method to divide the grid values into squares
-
-  getAllSquares(){
-    let squares = [];
-    [0, 3, 6].forEach((indexCol) => {
-      this.getThreeSquaresIndexCol(indexCol).forEach((square) => {
-        squares.push(square);
-      })
-    })
-    return squares;
-  }
-
-  getThreeSquaresIndexCol(indexCol){
-    let squares = [];
-    let square = [];
-    this.boardGrid.getValues().forEach((line, index)=> {
-      square.push( line.slice(indexCol, indexCol+3));
-      if((index + 1) % 3 === 0){
-        squares.push(square);
-        square = [];
-      }
-    })
-    return squares;
-  }
-
-  //methods to check if the board is solved!
-
-  solved(){
-    return this.checkSquares() && this.checkLinesColsBoard();
-  }
-
-  checkSquares(){
-    let result = true;
-    this.getAllSquares().forEach(square => {
-      if (!this.checkSquare(square)){
-        result = false;
-      }
-    })
-    return result;
-  }
-
-
-  checkSquare(square){
-    let line = Util.flatten(square);
-    return this.check(line);
-  }
-
-  checkLinesColsBoard(){
-    let grid = this.boardGrid.getValues();
-    let transposeGrid = Util.transpose(grid);
-    return this.checkLines(grid) && this.checkLines(transposeGrid);
-  }
-
-  check(line){
-    const b = Util.mergeSort(line);
-      if (b[0] === 0) {
-        return false;
-      }
-    return Util.similar(b , [1,2,3,4,5,6,7,8,9]);
-  }
-
-  checkLines(grid1){
-    grid1.forEach((line) => {
-      if (!this.check(line)) {
-        return false;
-      }
-    })
-    return true;
-  }
-}
-
-module.exports = Board;
-
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports) {
-
-
-// purpose of this class:
-// Well it s a tile object which hold three characteristics:
-  //  1) tile is blocked (meaning we can t change the value of the tile)
-  //  2) the value of the tile
-   // 3) possible values of this tile according to the grid (this.marks)
-
-class Tile {
-  constructor(val, blocked = true){
-    this.val = val;
-    this.blocked =  val === null ? false : blocked ;
-    this.marks = [];
-  }
-}
-
-module.exports = Tile;
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const Tile = __webpack_require__(1);
-
-// purpose of this class:
-// set of method created and use through all the different classes of the game
-
-
-const Util = {
-
-  merge: (left, right) => {
-                            const merged = [];
-                            while (left.length > 0 && right.length > 0) {
-                              let nextItem = (left[0] < right[0]) ? left.shift() : right.shift();
-                              merged.push(nextItem);
-                            }
-
-                            return merged.concat(left, right);
-
-                          },
-
-  mergeSort: (arr) =>     {
-                           if (arr.length < 2) {
-                              return arr;
-                            } else {
-
-                              const middle = Math.floor(arr.length / 2);
-                              const left = Util.mergeSort(arr.slice(0, middle));
-                              const right = Util.mergeSort(arr.slice(middle));
-
-                              return Util.merge(left, right);
-                            }
-                           },
-
-  uniq: (arr) =>           {
-                              var hash = {}, uniq = [];
-                              for ( let i = 0; i < arr.length; i++ ) {
-                                  if ( !hash.hasOwnProperty(arr[i]) ) {
-                                      hash[ arr[i] ] = true;
-                                      uniq.push(arr[i]);
-                                    }
-                                  }
-                              return uniq;
-                            },
-
-  similar: (arr1, arr2) =>  {
-                             arr1.forEach((val, index)=> {
-                                if(arr2[index] !== val){
-                                  return false;
-                                }
-                              })
-                              return true;
-                            },
-
-  transpose: (grid) =>      {
-                              const newGrid = [];
-                              grid.forEach((line, rowIdx) => {
-                                let newRow = [];
-                                line.forEach((val, colIdx)=> {
-                                  newRow.push(grid[colIdx][rowIdx])
-                                })
-                                newGrid.push(newRow);
-                              })
-                              return newGrid;
-                            },
-
-  flatten: (arr) =>         {
-                              let result = [];
-                              arr.forEach( el => {
-                                if( el instanceof Array){
-                                  result = result.concat(Util.flatten(el))
-                                }  else {
-                                  result.push(el)
-                                }
-                              })
-                              return result;
-                            },
-
-  deepDup: (grid) =>        {
-                              let newGrid = [];
-                              grid.forEach(line => {
-                                let newLine = [];
-                                line.forEach(tile => {
-                                  let val = tile.val;
-                                  let blocked = tile. blocked;
-                                  let newTile = new Tile(val, blocked);
-                                  newLine.push(newTile);
-                                })
-                                newGrid.push(newLine);
-                              })
-                              return newGrid;
-                            },
-
-  randomPos: (val) =>       {
-                              const row = Math.floor(val * Math.random());
-                              const col = Math.floor(val * Math.random());
-                              return [row, col];
-                            },
-
-  deleteVal: (arr, val) =>  {
-                              let index = arr.indexOf(val);
-                                if(index !== -1){
-                                  arr.splice(index, 1);
-                                }
-                            },
-
-  shuffle: (arr) =>         {
-                                let count = arr.length;
-                                while (count > 0) {
-
-                                    let index = Math.floor(Math.random() * count);
-                                    count--;
-
-                                    let temp = arr[count];
-                                    arr[count] = arr[index];
-                                    arr[index] = temp;
-                                }
-                                return arr;
-                            },
-
-   update: (positions1, positions2) => {
-                                          let result = [];
-                                          let hash = {};
-
-                                           positions2.forEach(pos2 => {
-                                             hash[`${pos2}`] = true;
-                                           })
-
-                                           positions1.forEach(pos1 => {
-                                             if(!hash[`${pos1}`]){
-                                              result.push(pos1);
-                                             }
-                                           })
-                                           return result;
-                                        }
-}
-
-
-module.exports = Util;
-
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-  const Board = __webpack_require__(0);
-  const BoardSolver = __webpack_require__(4)
-  const SudokuSolver = __webpack_require__(9)
-
-// purpose of this class:
-  // 1) Get one board
-  // 2) Get the solution of the board
- //  3) save the inputsVal to display the hint (ex: {1: 3, 2:0, 3: 2})
-
-class Sudoku {
-  constructor(difficulty = 15){
-    this.board = new Board(difficulty);
-    this.inputsVal = this.board.inputsVal;
-    const boardSolver = new BoardSolver(this.board);
-    this.solution = new SudokuSolver(boardSolver).solve();
-  }
-}
-
-module.exports = Sudoku;
-
-
-/***/ }),
+/* 0 */,
+/* 1 */,
+/* 2 */,
+/* 3 */,
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-const Util = __webpack_require__(2)
-const Board = __webpack_require__(0)
+const SudokuView = __webpack_require__(5);
+const SudokuGame = __webpack_require__(15);
 
-// purpose of this class:
-// 1) take the existing board and create a new Board with a deep copy of the previous grid
-// 2) update the board by calculating the possible values for each tile of value 0(the marks):
-   // loop through each available positions and update the tile with possible values
-// 3) update the board if there is a unique possible value on one tile 
-  // (tile is updated and available positions as well)
-// 4) Check after update if the board has a solution through (this.solvable)
-
-class BoardSolver{
-
-  constructor(board, availablePositions = null){
-    this.availablePositions = availablePositions === null ? board.boardGrid.availablePosistions : availablePositions;
-    this.board = new Board( board.difficulty, Util.deepDup(board.boardGrid.grid));
-    this.solvable = true;
-    this.updateMarks();
-  }
-
-  updateTile(pos, val){
-    this.board.updateVal(pos, val)
-    this.updateMarks();
-  }
-
-  solved(){
-    return this.board.solved();
-  }
-
-
-  updateMarks(){
-    let positions = [];
-    let update = false;
-
-    for(let index=0; index < this.availablePositions.length; index++){
-      let pos = this.availablePositions[index];
-      let tile = this.board.getTile(pos);
-      tile.marks = this.possibleMarks(pos);
-
-      if(tile.marks.length === 0){
-        this.solvable = false;
-        break;
-      } else if (tile.marks.length === 1){
-        this.board.updateVal(pos, tile.marks.pop());
-        positions.push(pos);
-        update = true;
-      }
-    }
-    this.updateAvailablePositions(update, positions);
-  }
-
-  updateAvailablePositions(update, positions){
-    if(update){
-      this.availablePositions = Util.update(this.availablePositions, positions);
-      this.updateMarks();
-    }
-  }
-
-
-  possibleMarks(pos){
-    let values = this.getLine(pos).concat(this.getCol(pos)).concat(this.getSquare(pos));
-    let uniqValues = Util.uniq(values);
-    let result = [];
-     [1,2,3,4,5,6,7,8,9].forEach(val => {
-       if(!uniqValues.includes(val)){
-         result.push(val)
-       }
-     })
-     return result;
-  }
-
-  getLine(pos){
-    let x = pos[0];
-    return this.board.boardGrid.getValues()[x];
-  }
-
-  getCol(pos){
-    let transpose = Util.transpose(this.board.boardGrid.getValues());
-    let y = pos[1];
-    return transpose[y];
-  }
-
-  getSquare(pos){
-    let squares = this.board.getAllSquares();
-    let index = this.getIndexSquare(pos);
-    return Util.flatten(squares[index]);
-  }
-
-  getLineIndexSquare(pos){
-    let line = pos[0];
-
-    switch(line){
-      case 0:
-      case 1:
-      case 2:
-        return [0,3,6];
-      case 3:
-      case 4:
-      case 5:
-        return [1,4,7];
-      case 6:
-      case 7:
-      case 8:
-        return [2,5,8];
-    }
-  }
-
-  getIndexSquare(pos){
-    let col = pos[1];
-    let indexes = this.getLineIndexSquare(pos);
-
-    switch(col){
-      case 0:
-      case 1:
-      case 2:
-        return indexes[0];
-      case 3:
-      case 4:
-      case 5:
-        return indexes[1];
-      case 6:
-      case 7:
-      case 8:
-        return indexes[2];
-    }
-
-  }
-}
-
-module.exports = BoardSolver;
+$(()=> {
+  const game = new SudokuGame();
+  new SudokuView(game);
+})
 
 
 /***/ }),
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
-
-const SudokuView = __webpack_require__(6)
-const SudokuGame = __webpack_require__(3)
-
-$(()=> {
-  const rootEl = $("#sudoku");
-  const game = new SudokuGame();
-  new SudokuView(rootEl, game)
-})
-
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const Sudoku = __webpack_require__(3)
+const Sudoku = __webpack_require__(15);
 
 // purpose of this class:
   // 1) Set a new grid build with <ul> and <li>
   // 2) create all the events of the game and menu
 
 class SudokuView {
-  constructor(rootEl, game){
-    this.$el = $(rootEl);
+  constructor(game){
     this.game = game;
 
-    this.$headerLevel = $(".header-level");
-    this.$headerLevel.on("click", "li", this.selectLevel.bind(this));
-
-    this.$calculateSolution = $(".calculate-solution");
-    this.$calculateSolution.on("click", this.calculateSolution.bind(this));
-
+    this.setHeaderEvents();
     this.$displayHint = $(".display-hint");
     this.$displayHint.on("click", this.displayHint.bind(this));
 
-    this.initiatePage();
-    this.$inputs = $(".sudoku-grid input[type= text]");
-    this.$inputs.change(this.handleChange.bind(this));
-
-    this.$inputs.on("click", this.handleSelect.bind(this));
+    this.buildGrid();
+    this.setGridEvents();
   }
 
-  initiatePage(){
-    const $sudokuGrid = $(".sudoku-grid");
-    this.game.board.getValues().forEach( (line, row) => {
-      let $ul = $("<ul></ul>");
-      line.forEach( (value, col)=> {
-        let $li = $("<li></li>");
-        $li.addClass(`li-${row}-${col}`);
-        $li.addClass('sudoku-grid-tile');
-          if(value !==0 ){
-            $li.append(`${value}`);
-            $li.addClass("tile-blocked");
-          } else{
-            let $input = $("<input></input>");
-                $input.attr("type", "text");
-                $input.attr("value", "");
-            $li.append($input);
-          }
-        $ul.append($li);
-      })
-      $sudokuGrid.append($ul);
-    })
+  setHeaderEvents(){
+    this.$headerLevel = $(".header-level");
+    this.$headerLevel.on("click", "li", this.selectLevel.bind(this));
+    this.$calculateSolution = $(".calculate-solution");
+    this.$calculateSolution.on("click", this.calculateSolution.bind(this));
   }
 
+  // select level event method:
 
   selectLevel(event){
     const content = $(event.currentTarget).text();
@@ -595,12 +133,121 @@ class SudokuView {
         break;
     }
     this.render(this.game.board.getValues());
-
   }
+
+  // calculateSolution of the grid event method:
 
   calculateSolution(){
     this.render(this.game.solution);
   }
+
+  // build Grid method:
+
+  buildGrid(){
+    const $sudokuGrid = $(".sudoku-grid");
+    this.game.board.getValues().forEach( (line, row) => {
+      let $ul = $("<ul></ul>");
+      this.buildLis(line, $ul, row);
+      $sudokuGrid.append($ul);
+    })
+  }
+
+  buildLis(line, ul, row){
+    line.forEach( (value, col)=> {
+      let $li = $("<li></li>");
+      $li.addClass(`li-${row}-${col} sudoku-grid-tile`);
+      if(value !==0 ){
+        $li.append(`${value}`);
+        $li.addClass("tile-blocked");
+      } else{
+        let $input = $("<input></input>");
+        $input.attr({type:"text", value: "" });
+        $li.append($input);
+      }
+      ul.append($li);
+    })
+  }
+
+  // set all the events on the grid
+
+  setGridEvents(){
+    this.$inputs = $(".sudoku-grid input[type= text]");
+    this.$inputs.change(this.handleChange.bind(this));
+    this.$inputs.on("click", this.handleSelect.bind(this));
+  }
+
+  // change color of lis event according to which input is selected by the user (handleSelect)
+
+  handleSelect(event){
+    this.removeSelectedLis();
+    const $li = $(event.currentTarget).parent();
+    const col = $li.attr("class")[5];
+    const $ul = $li.parent();
+    const $liLines = $ul.children();
+    $liLines.addClass("tile-selected");
+    for(let index=0; index < 9; index++){
+      const $li = $(".sudoku-grid").find(`.li-${index}-${col}`)
+            $li.addClass("tile-selected");
+    }
+  }
+
+  removeSelectedLis(){
+    const $selectedLi = $(".tile-selected");
+    if($selectedLi.length !== 0){
+      $selectedLi.removeClass("tile-selected");
+    }
+  }
+
+//method to handle user inputs on the grid: handleChange event
+
+    handleChange(event){
+      let $input = $(event.target);
+      let className = $input.parent().attr("class");
+      let pos = this.getPos(className);
+
+      let previousVal = this.game.board.getTile(pos).val;
+      let value = parseInt($input.val());
+      this.updateInputsVal(previousVal, value);
+          value = value !== value ? 0 : value;
+      this.game.board.updateVal(pos, value);
+      this.updateHint();
+
+      this.game.board.solved() ? this.printWinMessage() : false;
+
+    }
+
+    getPos(className){
+      let x = parseInt(className[3]);
+      let y = parseInt(className[5]);
+      return [x, y];
+    }
+
+    updateInputsVal(previousVal, value){
+      if( value !== value ){
+        this.game.inputsVal[previousVal] += 1;
+      } else if(this.game.board.valid(previousVal) && this.game.board.valid(value)){
+        this.game.inputsVal[previousVal] += 1;
+        this.game.inputsVal[value] -= 1;
+      }else if(this.game.board.valid(value)){
+        this.game.inputsVal[value] -= 1;
+      }
+    }
+
+    updateHint(){
+      const check = $(".display-hint").html();
+      if(check === "Hide Hint"){
+        let $ul = $(".hint");
+        $ul.remove();
+        this.buildHint();
+      }
+    }
+
+    printWinMessage(){
+      alert("Well played! You finished the grid!");
+    }
+
+
+// method to display the Hint event:
 
   displayHint(event){
     const $li = $(event.currentTarget);
@@ -617,6 +264,8 @@ class SudokuView {
        this.buildHint();
      } else {
        let $ul = $(".hint");
+       let $button =$(".check-values");
+       $button.remove();
        $ul.remove()
      }
   }
@@ -633,108 +282,77 @@ class SudokuView {
       $ul.append($li);
     }
     $sudokuGrid.append($ul);
+    this.buildCheckValuesButton();
   }
 
+  buildCheckValuesButton(){
+    const $footer = $(".footer");
+    let $button = $("<button></button>")
+        $button.html("Check values");
+        $button.addClass("check-values");
+        $button.on("click", this.checkValues.bind(this));
+        $footer.append($button);
+  }
 
-  handleChange(event){
-    let $input = $(event.target);
-    let className = $input.parent().attr("class");
-    let pos = this.getPos(className);
+  // methods for checkvalues event
 
-    let previousVal = this.game.board.getTile(pos).val;
-    let value = parseInt($input.val());
-    this.updateInputsVal(previousVal, value);
-
-    this.game.board.updateVal(pos, value);
-    this.updateHint();
-
-    if(this.game.board.solved()){
-      this.printWinMessage();
+    checkValues(event){
+      this.updateConflictValues();
+      setTimeout(function(){
+        let $liConflict = $(".conflict-value");
+        $liConflict.removeClass("conflict-value");
+      }, 3000);
     }
-  }
 
-  updateInputsVal(previousVal, value){
-    if( value !== value ){
-      this.game.inputsVal[previousVal] += 1;
-    } else if(this.game.board.valid(previousVal) && this.game.board.valid(value)){
-      this.game.inputsVal[previousVal] += 1;
-      this.game.inputsVal[value] -= 1;
-    }else if(this.game.board.valid(value)){
-      this.game.inputsVal[value] -= 1;
+    updateConflictValues(){
+      this.game.solution.forEach((line, row)=>{
+        line.forEach((value, col)=> {
+          let pos = [row, col];
+          let boardVal= this.game.board.getTile(pos).val;
+          if( boardVal !== 0 && boardVal !== value ){
+            console.log([value, boardVal]);
+            let $li = $(`.li-${row}-${col}`);
+            $li.addClass("conflict-value");
+          }
+        });
+      });
     }
-  }
 
-  updateHint(){
-    const check = $(".display-hint").html();
-    if(check === "Hide Hint"){
-      let $ul = $(".hint");
-      $ul.remove();
-      this.buildHint();
-    }
-  }
 
-  handleSelect(event){
-    const $selectedLi = $(".tile-selected");
-    if($selectedLi.length !== 0){
-      this.removeSelectedClass();
-    }
-    const $li = $(event.currentTarget).parent();
-    const col = $li.attr("class")[5];
-    const $ul = $li.parent();
-    const $liLines = $ul.children();
-    $liLines.addClass("tile-selected");
-    const $liCol = [];
-    for(let index=0; index < 9; index++){
-      const $li = $(".sudoku-grid").find(`.li-${index}-${col}`)
-            $li.addClass("tile-selected");
-    }
-  }
+  // methods to render an existing grid coming from the SelectLevel method:
 
-  removeSelectedClass(){
-    const $selectedLi = $(".tile-selected");
-    $selectedLi.removeClass("tile-selected");
-  }
-
-  getPos(className){
-    let x = parseInt(className[3]);
-    let y = parseInt(className[5]);
-    return [x, y];
-  }
-
-  printWinMessage(){
-    alert("Well played! You finished the grid!");
-  }
-
-  cleanDisplay(){
+  cleanHint(){
     let $ul = $(".hint");
+    let $button =$(".check-values");
+    $button.remove();
     $ul.remove();
     let $li = $(".display-hint");
     $li.html("Display Hint");
   }
 
   render(grid){
-    this.cleanDisplay();
-
+    this.cleanHint();
     grid.forEach((line, row)=> {
-      line.forEach((value, col) => {
-        let $li = $(`.li-${row}-${col}`);
-        $li.removeClass("tile-blocked");
-        $li.removeClass("tile-selected");
-        $li.html('');
-        if(value !== 0 ){
-          $li.html(`${value}`);
-          $li.addClass("tile-blocked");
-        } else{
-          let $input = $("<input></input>");
-              $input.attr("type", "text");
-              $input.attr("value", "");
-              $input.change(this.handleChange.bind(this));
-              $input.on("click", this.handleSelect.bind(this));
-          $li.append($input);
-        }
-      })
-    })
+      this.updateLis(line,row);
+    });
+  }
 
+  updateLis(line, row){
+    line.forEach((value, col) => {
+      let $li = $(`.li-${row}-${col}`);
+      $li.removeClass("tile-blocked tile-selected");
+      $li.html('');
+      if(value !== 0 ){
+        $li.html(`${value}`);
+        $li.addClass("tile-blocked");
+      } else{
+        let $input = $("<input></input>");
+            $input.attr({type:"text", value: "" });
+            $input.change(this.handleChange.bind(this));
+            $input.on("click", this.handleSelect.bind(this));
+        $li.append($input);
+      }
+    })
   }
 
 }
@@ -743,123 +361,8 @@ module.exports = SudokuView;
 
 
 /***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const solvedSudoku = __webpack_require__(8)
-const Tile = __webpack_require__(1)
-const Util = __webpack_require__(2)
-
-
-// Purpose of this class:
-// 1) Select a grid solved ( grid form: "1233434534...") if none provided
-// 2) Build tile: ( grid  form: [Tile1, Tile2, etc...])
-// 3) change grid form to get lines (grid form: [[line1], [line2], etc...])
-// 4) Insert inputsVal (which is a tile of value 0) according to
-//    the number of inputs we want( which define the difficulty of the game)
-//    then save the previous val to display the hint (this.inputsVal = {1: 2, 3:0, 7:3 etc...})
-      // At this step: we also save the available positions
-      // (which are the positions of the tile of value 0)
-// 5) Provide a getValues() to get the grid form: [[1,3,4,..], [9,4,3, ...], ...]
-
-
-class Grid {
-
-  constructor(difficulty, grid = null){
-
-    if(grid !== null){
-      this.grid = grid;
-    } else {
-      this.availablePosistions = [];
-      this.inputsVal = {
-        "1": 0,
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
-        "7": 0,
-        "8": 0,
-        "9": 0
-      };
-      this.grid = this.buildOneLineGrid();
-      this.grid = this.getLines();
-      this.insertInputTile(difficulty);
-    }
-
-  }
-
-  randomIndex(val){
-    return Math.floor(val * Math.random());
-  }
-
-  buildOneLineGrid(){
-    const index = this.randomIndex(200);
-    let gridString = solvedSudoku[index];
-    let gridTile = [];
-
-    gridString.split("").forEach((string) => {
-      let val = parseInt(string);
-      let newTile = new Tile(val);
-      gridTile.push(newTile);
-    });
-    return gridTile;
-  }
-
-// set the difficulty of the game
-
-  insertInputTile(number){
-    let positions = this.allPositions();
-    let inputPos = []
-    for(let val = 0; val < number; val++){
-      let pos = positions.pop();
-      let currentVal = this.grid[pos[0]][pos[1]].val;
-      this.inputsVal[currentVal] += 1;
-      this.grid[pos[0]][pos[1]] = new Tile(0, false)
-      inputPos.push(pos)
-    }
-    this.availablePosistions = inputPos;
-  }
-
-  getValues(){
-    let gridValues = [];
-    this.grid.forEach( line => {
-      let newLine = []
-      line.forEach((tile) => {
-        newLine.push(tile.val);
-      })
-      gridValues.push(newLine);
-    });
-    return gridValues;
-  }
-
-  getLines(){
-    let index = 0;
-    let lineGrid = [];
-      for(let i =0; i< 9; i++){
-        lineGrid.push(this.grid.slice(index, index+9))
-        index += 9
-      }
-    return lineGrid;
-  }
-// provide a set of all positions of the grid
-
-  allPositions(){
-    let positions = [];
-    for(let row=0; row< 9; row++){
-      for(let col= 0; col<9; col++){
-        positions.push([row, col])
-      }
-    }
-    return Util.shuffle(positions);
-  }
-
-}
-
-module.exports = Grid;
-
-
-/***/ }),
+/* 6 */,
+/* 7 */,
 /* 8 */
 /***/ (function(module, exports) {
 
@@ -1068,13 +571,580 @@ module.exports = solvedSudokus;
 
 
 /***/ }),
-/* 9 */
+/* 9 */,
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Tile = __webpack_require__(13);
+
+// purpose of this class:
+// set of method created and use through all the different classes of the game
+
+
+const Util = {
+
+  merge: (left, right) => {
+                            const merged = [];
+                            while (left.length > 0 && right.length > 0) {
+                              let nextItem = (left[0] < right[0]) ? left.shift() : right.shift();
+                              merged.push(nextItem);
+                            }
+
+                            return merged.concat(left, right);
+
+                          },
+
+  mergeSort: (arr) =>     {
+                           if (arr.length < 2) {
+                              return arr;
+                            } else {
+
+                              const middle = Math.floor(arr.length / 2);
+                              const left = Util.mergeSort(arr.slice(0, middle));
+                              const right = Util.mergeSort(arr.slice(middle));
+
+                              return Util.merge(left, right);
+                            }
+                           },
+
+  uniq: (arr) =>           {
+                              var hash = {}, uniq = [];
+                              for ( let i = 0; i < arr.length; i++ ) {
+                                  if ( !hash.hasOwnProperty(arr[i]) ) {
+                                      hash[ arr[i] ] = true;
+                                      uniq.push(arr[i]);
+                                    }
+                                  }
+                              return uniq;
+                            },
+
+  similar: (arr1, arr2) =>  {
+                             arr1.forEach((val, index)=> {
+                                if(arr2[index] !== val){
+                                  return false;
+                                }
+                              })
+                              return true;
+                            },
+
+  transpose: (grid) =>      {
+                              const newGrid = [];
+                              grid.forEach((line, rowIdx) => {
+                                let newRow = [];
+                                line.forEach((val, colIdx)=> {
+                                  newRow.push(grid[colIdx][rowIdx])
+                                })
+                                newGrid.push(newRow);
+                              })
+                              return newGrid;
+                            },
+
+  flatten: (arr) =>         {
+                              let result = [];
+                              arr.forEach( el => {
+                                if( el instanceof Array){
+                                  result = result.concat(Util.flatten(el))
+                                }  else {
+                                  result.push(el)
+                                }
+                              })
+                              return result;
+                            },
+
+  deepDup: (grid) =>        {
+                              let newGrid = [];
+                              grid.forEach(line => {
+                                let newLine = [];
+                                line.forEach(tile => {
+                                  let val = tile.val;
+                                  let blocked = tile. blocked;
+                                  let newTile = new Tile(val, blocked);
+                                  newLine.push(newTile);
+                                })
+                                newGrid.push(newLine);
+                              })
+                              return newGrid;
+                            },
+
+  randomPos: (val) =>       {
+                              const row = Math.floor(val * Math.random());
+                              const col = Math.floor(val * Math.random());
+                              return [row, col];
+                            },
+
+  deleteVal: (arr, val) =>  {
+                              let index = arr.indexOf(val);
+                                if(index !== -1){
+                                  arr.splice(index, 1);
+                                }
+                            },
+
+  shuffle: (arr) =>         {
+                                let count = arr.length;
+                                while (count > 0) {
+
+                                    let index = Math.floor(Math.random() * count);
+                                    count--;
+
+                                    let temp = arr[count];
+                                    arr[count] = arr[index];
+                                    arr[index] = temp;
+                                }
+                                return arr;
+                            },
+
+   update: (positions1, positions2) => {
+                                          let result = [];
+                                          let hash = {};
+
+                                           positions2.forEach(pos2 => {
+                                             hash[`${pos2}`] = true;
+                                           })
+
+                                           positions1.forEach(pos1 => {
+                                             if(!hash[`${pos1}`]){
+                                              result.push(pos1);
+                                             }
+                                           })
+                                           return result;
+                                        }
+}
+
+
+module.exports = Util;
+
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Grid = __webpack_require__(12);
+const Util = __webpack_require__(10);
+
+// purpose of this class:
+// 1) Build a grid ( take an existing grid or build a new one is none)
+// 2) save difficulty (number of tile with a value of 0)
+//    and the inputsVal( hash: {1: 2, 3: 4 etc..})
+// 2) Provide a solved method to check if the grid is solved
+// 3) update the grid according to correct input => val is a number and a num between 0 and 9
+
+class Board {
+
+  constructor(difficulty, grid = null){
+    this.difficulty = difficulty;
+    this.boardGrid = new Grid(difficulty, grid);
+    this.inputsVal = this.boardGrid.inputsVal;
+  }
+
+  getValues(){
+    return this.boardGrid.getValues();
+  }
+
+  updateVal(pos, val){
+
+    let tile = this.getTile(pos);
+    
+    if(!tile.blocked && this.valid(val)){
+      tile.val = val;
+    } else if ( !(val !== val)) {
+      alert("Please, enter a value between 0 and 9.")
+    }
+  }
+
+  getTile(pos){
+    let x = pos[0];
+    let y = pos[1];
+    return this.boardGrid.grid[x][y];
+  }
+
+  valid(val){
+    return Number.isInteger(val) && val >= 0 && val <= 9;
+  }
+
+  // method to divide the grid values into squares
+
+
+  getAllSquares(){
+    let squares = [];
+    [0, 3, 6].forEach((indexCol) => {
+      this.getThreeSquaresIndexCol(indexCol).forEach((square) => {
+        squares.push(square);
+      })
+    })
+    return squares;
+  }
+
+  getThreeSquaresIndexCol(indexCol){
+    let squares = [];
+    let square = [];
+    this.boardGrid.getValues().forEach((line, index)=> {
+      square.push( line.slice(indexCol, indexCol+3));
+      if((index + 1) % 3 === 0){
+        squares.push(square);
+        square = [];
+      }
+    })
+    return squares;
+  }
+
+  //methods to check if the board is solved!
+
+  solved(){
+    return this.checkLinesColsBoard() && this.checkSquares();
+  }
+
+  checkSquares(){
+    let result = true;
+    this.getAllSquares().forEach(square => {
+      if (!this.checkSquare(square)){
+        result = false;
+      }
+    })
+    return result;
+  }
+
+
+  checkSquare(square){
+    let line = Util.flatten(square);
+    return this.check(line);
+  }
+
+  checkLinesColsBoard(){
+    let grid = this.boardGrid.getValues();
+    let transposeGrid = Util.transpose(grid);
+    return this.checkLines(grid) && this.checkLines(transposeGrid);
+  }
+
+  check(line){
+    const b = Util.mergeSort(line);
+      if (b[0] === 0) {
+        return false;
+      }
+    return Util.similar(b , [1,2,3,4,5,6,7,8,9]);
+  }
+
+  checkLines(grid1){
+    grid1.forEach((line) => {
+      if (!this.check(line)) {
+        return false;
+      }
+    })
+    return true;
+  }
+}
+
+module.exports = Board;
+
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const solvedSudoku = __webpack_require__(8);
+const Tile = __webpack_require__(13);
+const Util = __webpack_require__(10);
+
+
+// Purpose of this class:
+// 1) Select a grid solved ( grid form: "1233434534...") if none provided
+// 2) Build tile: ( grid  form: [Tile1, Tile2, etc...])
+// 3) change grid form to get lines (grid form: [[line1], [line2], etc...])
+// 4) Insert inputsVal (which is a tile of value 0) according to
+//    the number of inputs we want( which define the difficulty of the game)
+//    then save the previous val to display the hint (this.inputsVal = {1: 2, 3:0, 7:3 etc...})
+      // At this step: we also save the available positions
+      // (which are the positions of the tile of value 0)
+// 5) Provide a getValues() to get the grid form: [[1,3,4,..], [9,4,3, ...], ...]
+
+
+class Grid {
+
+  constructor(difficulty, grid = null){
+
+    if(grid !== null){
+      this.grid = grid;
+    } else {
+      this.availablePosistions = [];
+      this.inputsVal = {
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 0,
+        "6": 0,
+        "7": 0,
+        "8": 0,
+        "9": 0
+      };
+      this.grid = this.buildOneLineGrid();
+      this.grid = this.getLines();
+      this.insertInputTile(difficulty);
+    }
+
+  }
+
+  randomIndex(val){
+    return Math.floor(val * Math.random());
+  }
+
+  buildOneLineGrid(){
+    const index = this.randomIndex(200);
+    let gridString = solvedSudoku[index];
+    let gridTile = [];
+
+    gridString.split("").forEach((string) => {
+      let val = parseInt(string);
+      let newTile = new Tile(val);
+      gridTile.push(newTile);
+    });
+    return gridTile;
+  }
+
+// set the difficulty of the game
+
+  insertInputTile(number){
+    let positions = this.allPositions();
+    let inputPos = []
+    for(let val = 0; val < number; val++){
+      let pos = positions.pop();
+      let currentVal = this.grid[pos[0]][pos[1]].val;
+      this.inputsVal[currentVal] += 1;
+      this.grid[pos[0]][pos[1]] = new Tile(0, false)
+      inputPos.push(pos)
+    }
+    this.availablePosistions = inputPos;
+  }
+
+  getValues(){
+    let gridValues = [];
+    this.grid.forEach( line => {
+      let newLine = []
+      line.forEach((tile) => {
+        newLine.push(tile.val);
+      })
+      gridValues.push(newLine);
+    });
+    return gridValues;
+  }
+
+  getLines(){
+    let index = 0;
+    let lineGrid = [];
+      for(let i =0; i< 9; i++){
+        lineGrid.push(this.grid.slice(index, index+9))
+        index += 9
+      }
+    return lineGrid;
+  }
+// provide a set of all positions of the grid
+
+  allPositions(){
+    let positions = [];
+    for(let row=0; row< 9; row++){
+      for(let col= 0; col<9; col++){
+        positions.push([row, col])
+      }
+    }
+    return Util.shuffle(positions);
+  }
+
+}
+
+module.exports = Grid;
+
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports) {
+
+
+// purpose of this class:
+// Well it s a tile object which hold three characteristics:
+  //  1) tile is blocked (meaning we can t change the value of the tile)
+  //  2) the value of the tile
+   // 3) possible values of this tile according to the grid (this.marks)
+
+class Tile {
+  constructor(val, blocked = true){
+    this.val = val;
+    this.blocked =  val === null ? false : blocked ;
+    this.marks = [];
+  }
+}
+
+module.exports = Tile;
+
+
+/***/ }),
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-const BoardSolver = __webpack_require__(4)
-const Board = __webpack_require__(0)
-const Tile = __webpack_require__(1)
+const Util = __webpack_require__(10);
+const Board = __webpack_require__(11);
+
+// purpose of this class:
+// 1) take the existing board and create a new Board with a deep copy of the previous grid
+// 2) update the board by calculating the possible values for each tile of value 0(the marks):
+   // loop through each available positions and update the tile with possible values
+// 3) update the board if there is a unique possible value on one tile
+  // (tile is updated and available positions as well)
+// 4) Check after update if the board has a solution through (this.solvable)
+
+class BoardSolver{
+
+  constructor(board, availablePositions = null){
+    this.availablePositions = availablePositions === null ? board.boardGrid.availablePosistions : availablePositions;
+    this.board = new Board( board.difficulty, Util.deepDup(board.boardGrid.grid));
+    this.solvable = true;
+    this.updateMarks();
+  }
+
+  updateTile(pos, val){
+    this.board.updateVal(pos, val)
+    this.updateMarks();
+  }
+
+  solved(){
+    return this.board.solved();
+  }
+
+
+  updateMarks(){
+    let positions = [];
+    let update = false;
+
+    for(let index=0; index < this.availablePositions.length; index++){
+      let pos = this.availablePositions[index];
+      let tile = this.board.getTile(pos);
+      tile.marks = this.possibleMarks(pos);
+
+      if(tile.marks.length === 0){
+        this.solvable = false;
+        break;
+      } else if (tile.marks.length === 1){
+        this.board.updateVal(pos, tile.marks.pop());
+        positions.push(pos);
+        update = true;
+      }
+    }
+    this.updateAvailablePositions(update, positions);
+  }
+
+  updateAvailablePositions(update, positions){
+    if(update){
+      this.availablePositions = Util.update(this.availablePositions, positions);
+      this.updateMarks();
+    }
+  }
+
+
+  possibleMarks(pos){
+    let values = this.getLine(pos).concat(this.getCol(pos)).concat(this.getSquare(pos));
+    let uniqValues = Util.uniq(values);
+    let result = [];
+     [1,2,3,4,5,6,7,8,9].forEach(val => {
+       if(!uniqValues.includes(val)){
+         result.push(val)
+       }
+     })
+     return result;
+  }
+
+  getLine(pos){
+    let x = pos[0];
+    return this.board.boardGrid.getValues()[x];
+  }
+
+  getCol(pos){
+    let transpose = Util.transpose(this.board.boardGrid.getValues());
+    let y = pos[1];
+    return transpose[y];
+  }
+
+  getSquare(pos){
+    let squares = this.board.getAllSquares();
+    let index = this.getIndexSquare(pos);
+    return Util.flatten(squares[index]);
+  }
+
+  getLineIndexSquare(pos){
+    let line = pos[0];
+
+    switch(line){
+      case 0:
+      case 1:
+      case 2:
+        return [0,3,6];
+      case 3:
+      case 4:
+      case 5:
+        return [1,4,7];
+      case 6:
+      case 7:
+      case 8:
+        return [2,5,8];
+    }
+  }
+
+  getIndexSquare(pos){
+    let col = pos[1];
+    let indexes = this.getLineIndexSquare(pos);
+
+    switch(col){
+      case 0:
+      case 1:
+      case 2:
+        return indexes[0];
+      case 3:
+      case 4:
+      case 5:
+        return indexes[1];
+      case 6:
+      case 7:
+      case 8:
+        return indexes[2];
+    }
+
+  }
+}
+
+module.exports = BoardSolver;
+
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+  const Board = __webpack_require__(11);
+  const BoardSolver = __webpack_require__(14);
+  const SudokuSolver = __webpack_require__(16);
+
+// purpose of this class:
+  // 1) Get one board
+  // 2) Get the solution of the board
+ //  3) save the inputsVal to display the hint (ex: {1: 3, 2:0, 3: 2})
+
+class Sudoku {
+  constructor(difficulty = 15){
+    this.board = new Board(difficulty);
+    this.inputsVal = this.board.inputsVal;
+    const boardSolver = new BoardSolver(this.board);
+    this.solution = new SudokuSolver(boardSolver).solve();
+  }
+}
+
+module.exports = Sudoku;
+
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+const BoardSolver = __webpack_require__(14);
+const Board = __webpack_require__(11);
+const Tile = __webpack_require__(13);
 
 // Purpose of this class:
 // 1) Accept a boardSolver

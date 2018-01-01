@@ -1,10 +1,13 @@
 
+.footer, .footer h4{
+  display: flex;
+}
+
 .footer{
   height: 70px;
   width: 350px;
   margin: 0 auto;
 
-  display: flex;
   justify-content: flex-end;
 
   position: relative;
@@ -12,9 +15,8 @@
   background-color: #89fcb7;
 }
 
-.footer h4 {
+.footer > h4 {
 
-  display: flex;
   justify-content: center;
   text-align: center;
   align-items: center;
@@ -29,7 +31,24 @@
   position: absolute;
   top: -50px;
   left: -40px;
-  /*transform: rotate(10deg);*/
 
   border-radius: 15px;
+}
+
+
+
+.check-values{
+  position: absolute;
+  top: -60px;
+  right: 5px;
+
+  width: 120px;
+  height: 25px;
+
+  font-size: 13px;
+  border-radius: 5px;
+}
+
+.check-values:focus{
+  outline: 0;
 }

@@ -1,9 +1,8 @@
 
-const SudokuView = require("./sudoku_view.js")
-const SudokuGame = require("./sudoku.js")
+const SudokuView = require("./sudoku_view.js");
+const SudokuGame = require("./game/sudoku.js");
 
 $(()=> {
-  const rootEl = $("#sudoku");
   const game = new SudokuGame();
-  new SudokuView(rootEl, game)
+  new SudokuView(game);
 })

@@ -1,7 +1,7 @@
 
-const BoardSolver = require("./board_solver.js")
-const Board = require("./board.js")
-const Tile = require("./tile.js")
+const BoardSolver = require("./board_solver.js");
+const Board = require("./../game/board.js");
+const Tile = require("./../game/tile.js");
 
 // Purpose of this class:
 // 1) Accept a boardSolver

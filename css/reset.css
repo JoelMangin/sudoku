@@ -1,6 +1,6 @@
 
 figure, ul, ol, li, h1, h2, h3, h4, img, input, section, nav, body,
-footer, a, span,  main{
+footer, a, span, main{
 
   padding: 0;
   border: 0;
@@ -15,7 +15,6 @@ footer, a, span,  main{
   background: transparent;
 
 }
-
 
 img{
   display: block;

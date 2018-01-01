@@ -1,6 +1,6 @@
-const solvedSudoku = require("./../existing_sudoku/solved_sudokus.js")
-const Tile = require("./tile.js")
-const Util = require("./util.js")
+const solvedSudoku = require("./../../existing_sudoku/solved_sudokus.js");
+const Tile = require("./tile.js");
+const Util = require("./util.js");
 
 
 // Purpose of this class:

@@ -5,9 +5,13 @@
     .header-nav, .sudoku, .footer, .sudoku-grid{
       width: 600px;
     }
+
     .header-nav{
       height: 75px;
-      font-size: 25px;
+    }
+
+    .header-menu > li {
+      font-size: 20px;
     }
 
     .sudoku-tag{
@@ -26,7 +30,7 @@
       height: 800px;
     }
 
-    .sudoku-grid{
+    .sudoku-grid {
       height: 540px;
     }
 
@@ -38,7 +42,7 @@
     .sudoku-grid-tile{
       width: 60px;
       height: 100%;
-      font-size: 25px;
+      font-size: 20px;
 
     }
 
@@ -46,6 +50,17 @@
       height: 250px;
       top: -120px;
       left: -60px;
+    }
+
+    .check-values{
+      top: -120px;
+      right: 30px;
+
+      width: 200px;
+      height: 50px;
+
+      font-size: 20px;
+      border-radius: 10px;
     }
 }
 
@@ -58,7 +73,10 @@
 
   .header-nav{
     height: 75px;
-    font-size: 30px;
+  }
+
+  .header-menu > li {
+    font-size: 25px;
   }
 
   .sudoku-tag{
@@ -80,19 +98,33 @@
     height: 650px;
   }
 
-  .sudoku-grid > ul {
+  .sudoku-grid > ul, .hint {
     width: 650px;
     height: 72px;
+  }
+
+  .hint > li, .sudoku-grid-tile{
+    font-size: 25px;
   }
 
   .sudoku-grid-tile{
     width: 72px;
     height: 100%;
-    font-size: 25px;
   }
 
-  .footer h4 {
+  .footer > h4 {
     font-size: 18px;
+  }
+
+  .check-values{
+    top: -100px;
+    right: 120px;
+
+    width: 200px;
+    height: 50px;
+
+    font-size: 20px;
+    border-radius: 10px;
   }
 }
 
@@ -104,6 +136,9 @@
 
   .header-nav{
     height: 75px;
+  }
+
+  .header-menu > li {
     font-size: 30px;
   }
 
@@ -128,11 +163,13 @@
     height: 85px;
   }
 
+  .sudoku-grid-tile, .hint li{
+    font-size: 30px;
+  }
+
   .sudoku-grid-tile{
     width: 85px;
     height: 100%;
-    font-size: 30px;
-
   }
 
   .footer > figure {
@@ -141,8 +178,18 @@
     left: -70px;
   }
 
-  .footer h4 {
+  .footer > h4 {
     font-size: 25px;
   }
 
+  .check-values{
+    top: -80px;
+    right: 200px;
+
+    width: 250px;
+    height: 60px;
+
+    font-size: 25px;
+    border-radius: 10px;
+  }
 }

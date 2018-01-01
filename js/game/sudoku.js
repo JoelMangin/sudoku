@@ -1,6 +1,6 @@
   const Board = require("./board.js");
-  const BoardSolver = require("./board_solver.js")
-  const SudokuSolver = require("./sudoku_solver.js")
+  const BoardSolver = require("./../solver/board_solver.js");
+  const SudokuSolver = require("./../solver/sudoku_solver.js");
 
 // purpose of this class:
   // 1) Get one board

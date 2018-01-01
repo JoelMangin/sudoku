@@ -1,53 +1,29 @@
-const Sudoku = require("./sudoku.js")
+const Sudoku = require("./game/sudoku.js");
 
 // purpose of this class:
   // 1) Set a new grid build with <ul> and <li>
   // 2) create all the events of the game and menu
 
 class SudokuView {
-  constructor(rootEl, game){
-    this.$el = $(rootEl);
+  constructor(game){
     this.game = game;
 
-    this.$headerLevel = $(".header-level");
-    this.$headerLevel.on("click", "li", this.selectLevel.bind(this));
-
-    this.$calculateSolution = $(".calculate-solution");
-    this.$calculateSolution.on("click", this.calculateSolution.bind(this));
-
+    this.setHeaderEvents();
     this.$displayHint = $(".display-hint");
     this.$displayHint.on("click", this.displayHint.bind(this));
 
-    this.initiatePage();
-    this.$inputs = $(".sudoku-grid input[type= text]");
-    this.$inputs.change(this.handleChange.bind(this));
-
-    this.$inputs.on("click", this.handleSelect.bind(this));
+    this.buildGrid();
+    this.setGridEvents();
   }
 
-  initiatePage(){
-    const $sudokuGrid = $(".sudoku-grid");
-    this.game.board.getValues().forEach( (line, row) => {
-      let $ul = $("<ul></ul>");
-      line.forEach( (value, col)=> {
-        let $li = $("<li></li>");
-        $li.addClass(`li-${row}-${col}`);
-        $li.addClass('sudoku-grid-tile');
-          if(value !==0 ){
-            $li.append(`${value}`);
-            $li.addClass("tile-blocked");
-          } else{
-            let $input = $("<input></input>");
-                $input.attr("type", "text");
-                $input.attr("value", "");
-            $li.append($input);
-          }
-        $ul.append($li);
-      })
-      $sudokuGrid.append($ul);
-    })
+  setHeaderEvents(){
+    this.$headerLevel = $(".header-level");
+    this.$headerLevel.on("click", "li", this.selectLevel.bind(this));
+    this.$calculateSolution = $(".calculate-solution");
+    this.$calculateSolution.on("click", this.calculateSolution.bind(this));
   }
 
+  // select level event method:
 
   selectLevel(event){
     const content = $(event.currentTarget).text();
@@ -70,12 +46,121 @@ class SudokuView {
         break;
     }
     this.render(this.game.board.getValues());
-
   }
+
+  // calculateSolution of the grid event method:
 
   calculateSolution(){
     this.render(this.game.solution);
   }
+
+  // build Grid method:
+
+  buildGrid(){
+    const $sudokuGrid = $(".sudoku-grid");
+    this.game.board.getValues().forEach( (line, row) => {
+      let $ul = $("<ul></ul>");
+      this.buildLis(line, $ul, row);
+      $sudokuGrid.append($ul);
+    })
+  }
+
+  buildLis(line, ul, row){
+    line.forEach( (value, col)=> {
+      let $li = $("<li></li>");
+      $li.addClass(`li-${row}-${col} sudoku-grid-tile`);
+      if(value !==0 ){
+        $li.append(`${value}`);
+        $li.addClass("tile-blocked");
+      } else{
+        let $input = $("<input></input>");
+        $input.attr({type:"text", value: "" });
+        $li.append($input);
+      }
+      ul.append($li);
+    })
+  }
+
+  // set all the events on the grid
+
+  setGridEvents(){
+    this.$inputs = $(".sudoku-grid input[type= text]");
+    this.$inputs.change(this.handleChange.bind(this));
+    this.$inputs.on("click", this.handleSelect.bind(this));
+  }
+
+  // change color of lis event according to which input is selected by the user (handleSelect)
+
+  handleSelect(event){
+    this.removeSelectedLis();
+    const $li = $(event.currentTarget).parent();
+    const col = $li.attr("class")[5];
+    const $ul = $li.parent();
+    const $liLines = $ul.children();
+    $liLines.addClass("tile-selected");
+    for(let index=0; index < 9; index++){
+      const $li = $(".sudoku-grid").find(`.li-${index}-${col}`)
+            $li.addClass("tile-selected");
+    }
+  }
+
+  removeSelectedLis(){
+    const $selectedLi = $(".tile-selected");
+    if($selectedLi.length !== 0){
+      $selectedLi.removeClass("tile-selected");
+    }
+  }
+
+//method to handle user inputs on the grid: handleChange event
+
+    handleChange(event){
+      let $input = $(event.target);
+      let className = $input.parent().attr("class");
+      let pos = this.getPos(className);
+
+      let previousVal = this.game.board.getTile(pos).val;
+      let value = parseInt($input.val());
+      this.updateInputsVal(previousVal, value);
+          value = value !== value ? 0 : value;
+      this.game.board.updateVal(pos, value);
+      this.updateHint();
+
+      this.game.board.solved() ? this.printWinMessage() : false;
+
+    }
+
+    getPos(className){
+      let x = parseInt(className[3]);
+      let y = parseInt(className[5]);
+      return [x, y];
+    }
+
+    updateInputsVal(previousVal, value){
+      if( value !== value ){
+        this.game.inputsVal[previousVal] += 1;
+      } else if(this.game.board.valid(previousVal) && this.game.board.valid(value)){
+        this.game.inputsVal[previousVal] += 1;
+        this.game.inputsVal[value] -= 1;
+      }else if(this.game.board.valid(value)){
+        this.game.inputsVal[value] -= 1;
+      }
+    }
+
+    updateHint(){
+      const check = $(".display-hint").html();
+      if(check === "Hide Hint"){
+        let $ul = $(".hint");
+        $ul.remove();
+        this.buildHint();
+      }
+    }
+
+    printWinMessage(){
+      alert("Well played! You finished the grid!");
+    }
+
+
+// method to display the Hint event:
 
   displayHint(event){
     const $li = $(event.currentTarget);
@@ -92,6 +177,8 @@ class SudokuView {
        this.buildHint();
      } else {
        let $ul = $(".hint");
+       let $button =$(".check-values");
+       $button.remove();
        $ul.remove()
      }
   }
@@ -108,108 +195,77 @@ class SudokuView {
       $ul.append($li);
     }
     $sudokuGrid.append($ul);
+    this.buildCheckValuesButton();
   }
 
+  buildCheckValuesButton(){
+    const $footer = $(".footer");
+    let $button = $("<button></button>")
+        $button.html("Check values");
+        $button.addClass("check-values");
+        $button.on("click", this.checkValues.bind(this));
+        $footer.append($button);
+  }
 
-  handleChange(event){
-    let $input = $(event.target);
-    let className = $input.parent().attr("class");
-    let pos = this.getPos(className);
+  // methods for checkvalues event
 
-    let previousVal = this.game.board.getTile(pos).val;
-    let value = parseInt($input.val());
-    this.updateInputsVal(previousVal, value);
-
-    this.game.board.updateVal(pos, value);
-    this.updateHint();
-
-    if(this.game.board.solved()){
-      this.printWinMessage();
+    checkValues(event){
+      this.updateConflictValues();
+      setTimeout(function(){
+        let $liConflict = $(".conflict-value");
+        $liConflict.removeClass("conflict-value");
+      }, 3000);
     }
-  }
 
-  updateInputsVal(previousVal, value){
-    if( value !== value ){
-      this.game.inputsVal[previousVal] += 1;
-    } else if(this.game.board.valid(previousVal) && this.game.board.valid(value)){
-      this.game.inputsVal[previousVal] += 1;
-      this.game.inputsVal[value] -= 1;
-    }else if(this.game.board.valid(value)){
-      this.game.inputsVal[value] -= 1;
+    updateConflictValues(){
+      this.game.solution.forEach((line, row)=>{
+        line.forEach((value, col)=> {
+          let pos = [row, col];
+          let boardVal= this.game.board.getTile(pos).val;
+          if( boardVal !== 0 && boardVal !== value ){
+            console.log([value, boardVal]);
+            let $li = $(`.li-${row}-${col}`);
+            $li.addClass("conflict-value");
+          }
+        });
+      });
     }
-  }
 
-  updateHint(){
-    const check = $(".display-hint").html();
-    if(check === "Hide Hint"){
-      let $ul = $(".hint");
-      $ul.remove();
-      this.buildHint();
-    }
-  }
 
-  handleSelect(event){
-    const $selectedLi = $(".tile-selected");
-    if($selectedLi.length !== 0){
-      this.removeSelectedClass();
-    }
-    const $li = $(event.currentTarget).parent();
-    const col = $li.attr("class")[5];
-    const $ul = $li.parent();
-    const $liLines = $ul.children();
-    $liLines.addClass("tile-selected");
-    const $liCol = [];
-    for(let index=0; index < 9; index++){
-      const $li = $(".sudoku-grid").find(`.li-${index}-${col}`)
-            $li.addClass("tile-selected");
-    }
-  }
+  // methods to render an existing grid coming from the SelectLevel method:
 
-  removeSelectedClass(){
-    const $selectedLi = $(".tile-selected");
-    $selectedLi.removeClass("tile-selected");
-  }
-
-  getPos(className){
-    let x = parseInt(className[3]);
-    let y = parseInt(className[5]);
-    return [x, y];
-  }
-
-  printWinMessage(){
-    alert("Well played! You finished the grid!");
-  }
-
-  cleanDisplay(){
+  cleanHint(){
     let $ul = $(".hint");
+    let $button =$(".check-values");
+    $button.remove();
     $ul.remove();
     let $li = $(".display-hint");
     $li.html("Display Hint");
   }
 
   render(grid){
-    this.cleanDisplay();
-
+    this.cleanHint();
     grid.forEach((line, row)=> {
-      line.forEach((value, col) => {
-        let $li = $(`.li-${row}-${col}`);
-        $li.removeClass("tile-blocked");
-        $li.removeClass("tile-selected");
-        $li.html('');
-        if(value !== 0 ){
-          $li.html(`${value}`);
-          $li.addClass("tile-blocked");
-        } else{
-          let $input = $("<input></input>");
-              $input.attr("type", "text");
-              $input.attr("value", "");
-              $input.change(this.handleChange.bind(this));
-              $input.on("click", this.handleSelect.bind(this));
-          $li.append($input);
-        }
-      })
-    })
+      this.updateLis(line,row);
+    });
+  }
 
+  updateLis(line, row){
+    line.forEach((value, col) => {
+      let $li = $(`.li-${row}-${col}`);
+      $li.removeClass("tile-blocked tile-selected");
+      $li.html('');
+      if(value !== 0 ){
+        $li.html(`${value}`);
+        $li.addClass("tile-blocked");
+      } else{
+        let $input = $("<input></input>");
+            $input.attr({type:"text", value: "" });
+            $input.change(this.handleChange.bind(this));
+            $input.on("click", this.handleSelect.bind(this));
+        $li.append($input);
+      }
+    })
   }
 
 }

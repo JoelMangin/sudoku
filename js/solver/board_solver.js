@@ -1,12 +1,12 @@
 
-const Util = require("./util.js")
-const Board = require("./board.js")
+const Util = require("./../game/util.js");
+const Board = require("./../game/board.js");
 
 // purpose of this class:
 // 1) take the existing board and create a new Board with a deep copy of the previous grid
 // 2) update the board by calculating the possible values for each tile of value 0(the marks):
    // loop through each available positions and update the tile with possible values
-// 3) update the board if there is a unique possible value on one tile 
+// 3) update the board if there is a unique possible value on one tile
   // (tile is updated and available positions as well)
 // 4) Check after update if the board has a solution through (this.solvable)
 

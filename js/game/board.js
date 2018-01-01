@@ -1,5 +1,12 @@
-const Grid = require("./grid.js")
-const Util = require("./util.js")
+const Grid = require("./grid.js");
+const Util = require("./util.js");
+
+// purpose of this class:
+// 1) Build a grid ( take an existing grid or build a new one is none)
+// 2) save difficulty (number of tile with a value of 0)
+//    and the inputsVal( hash: {1: 2, 3: 4 etc..})
+// 2) Provide a solved method to check if the grid is solved
+// 3) update the grid according to correct input => val is a number and a num between 0 and 9
 
 class Board {
 
@@ -16,10 +23,10 @@ class Board {
   updateVal(pos, val){
 
     let tile = this.getTile(pos);
-
+    
     if(!tile.blocked && this.valid(val)){
       tile.val = val;
-    } else if ( !val !== val) {
+    } else if ( !(val !== val)) {
       alert("Please, enter a value between 0 and 9.")
     }
   }
@@ -35,6 +42,7 @@ class Board {
   }
 
   // method to divide the grid values into squares
+
 
   getAllSquares(){
     let squares = [];
@@ -62,7 +70,7 @@ class Board {
   //methods to check if the board is solved!
 
   solved(){
-    return this.checkSquares() && this.checkLinesColsBoard();
+    return this.checkLinesColsBoard() && this.checkSquares();
   }
 
   checkSquares(){
