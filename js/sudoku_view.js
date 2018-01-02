@@ -45,7 +45,31 @@ class SudokuView {
         this.game = new Sudoku(55);
         break;
     }
+    this.cleanAfterSelectLevel(event);
     this.render(this.game.board.getValues());
+  }
+
+  cleanAfterSelectLevel(event){
+    const $ulHeaderLevel = $(event.currentTarget).parent();
+    $ulHeaderLevel.addClass("no-display");
+    this.cleanNoDisplayHeaderLevel();
+    this.cleanHint()
+  }
+
+  cleanNoDisplayHeaderLevel(){
+    setTimeout(function(){
+      let $ul = $(".no-display");
+      $ul.removeClass("no-display");
+    }, 150);
+  }
+
+  cleanHint(){
+    let $ulHint = $(".hint");
+    let $button =$(".check-values");
+    $button.remove();
+    $ulHint.remove();
+    let $li = $(".display-hint");
+    $li.html("Display Hint");
   }
 
   // calculateSolution of the grid event method:
@@ -89,7 +113,7 @@ class SudokuView {
     this.$inputs.on("click", this.handleSelect.bind(this));
   }
 
-  // change color of lis event according to which input is selected by the user (handleSelect)
+  // change color of li(s) event according to which input is selected by the user (handleSelect)
 
   handleSelect(event){
     this.removeSelectedLis();
@@ -124,7 +148,6 @@ class SudokuView {
           value = value !== value ? 0 : value;
       this.game.board.updateVal(pos, value);
       this.updateHint();
-
       this.game.board.solved() ? this.printWinMessage() : false;
 
     }
@@ -234,17 +257,7 @@ class SudokuView {
 
   // methods to render an existing grid coming from the SelectLevel method:
 
-  cleanHint(){
-    let $ul = $(".hint");
-    let $button =$(".check-values");
-    $button.remove();
-    $ul.remove();
-    let $li = $(".display-hint");
-    $li.html("Display Hint");
-  }
-
   render(grid){
-    this.cleanHint();
     grid.forEach((line, row)=> {
       this.updateLis(line,row);
     });

@@ -23,7 +23,6 @@ class Board {
   updateVal(pos, val){
 
     let tile = this.getTile(pos);
-    
     if(!tile.blocked && this.valid(val)){
       tile.val = val;
     } else if ( !(val !== val)) {
