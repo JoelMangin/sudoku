@@ -2,7 +2,7 @@
 import SudokuHintView from "./sudoku_hint_view.js";
 import SudokuGridView from "./sudoku_grid_view.js";
 
-class SudokuView2 {
+class SudokuView {
 
   constructor(game){
     this.SudokuHintView = new SudokuHintView(game);
@@ -10,4 +10,4 @@ class SudokuView2 {
 
 }
 
-export default SudokuView2;
+export default SudokuView;

@@ -517,7 +517,7 @@ module.exports = BoardSolver;
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__view_sudoku_view2_js__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__view_sudoku_view_js__ = __webpack_require__(17);
 
 
 const SudokuGame = __webpack_require__(3);
@@ -525,7 +525,7 @@ const SudokuGame = __webpack_require__(3);
 
 $(()=> {
   const game = new SudokuGame();
-  new __WEBPACK_IMPORTED_MODULE_0__view_sudoku_view2_js__["a" /* default */](game);
+  new __WEBPACK_IMPORTED_MODULE_0__view_sudoku_view_js__["a" /* default */](game);
 });
 
 
@@ -1049,28 +1049,7 @@ class SudokuGridView extends __WEBPACK_IMPORTED_MODULE_0__sudoku_select_level_vi
 
 
 /***/ }),
-/* 11 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__sudoku_hint_view_js__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__sudoku_grid_view_js__ = __webpack_require__(10);
-
-
-
-
-class SudokuView2 {
-
-  constructor(game){
-    this.SudokuHintView = new __WEBPACK_IMPORTED_MODULE_0__sudoku_hint_view_js__["a" /* default */](game);
-  }
-
-}
-
-/* harmony default export */ __webpack_exports__["a"] = (SudokuView2);
-
-
-/***/ }),
+/* 11 */,
 /* 12 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -1300,6 +1279,28 @@ class SudokuCalculateSolutionView {
 }
 
 /* harmony default export */ __webpack_exports__["a"] = (SudokuCalculateSolutionView);
+
+
+/***/ }),
+/* 17 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__sudoku_hint_view_js__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__sudoku_grid_view_js__ = __webpack_require__(10);
+
+
+
+
+class SudokuView {
+
+  constructor(game){
+    this.SudokuHintView = new __WEBPACK_IMPORTED_MODULE_0__sudoku_hint_view_js__["a" /* default */](game);
+  }
+
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (SudokuView);
 
 
 /***/ })
