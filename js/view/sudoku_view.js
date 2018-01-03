@@ -7,7 +7,6 @@ class SudokuView {
   constructor(game){
     this.SudokuHintView = new SudokuHintView(game);
   }
-
 }
 
 export default SudokuView;
