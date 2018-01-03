@@ -9,7 +9,6 @@
   margin: 0 auto;
 
   justify-content: flex-end;
-
   position: relative;
 
   background-color: #89fcb7;
@@ -24,21 +23,22 @@
   padding: 15px;
 }
 
+.footer > figure, .check-values{
+  position: absolute;
+}
+
 .footer > figure {
   height: 150px;
   width: 100%;
 
-  position: absolute;
   top: -50px;
   left: -40px;
 
   border-radius: 15px;
 }
 
-
-
 .check-values{
-  position: absolute;
+
   top: -60px;
   right: 5px;
 
