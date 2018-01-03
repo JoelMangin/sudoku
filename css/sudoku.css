@@ -23,9 +23,14 @@ body, .sudoku-grid-tile{
   margin: 0 auto;
 }
 
+.sudoku-grid, .sudoku-grid > ul, .sudoku-grid-tile{
+  display: flex;
+}
+
 .sudoku, .sudoku-grid{
   width: 350px;
 }
+
 
 .sudoku {
   height: 500px;
@@ -33,12 +38,10 @@ body, .sudoku-grid-tile{
 
 .sudoku-grid{
   height: 350px;
-  display: flex;
   flex-wrap: wrap;
 }
 
 .sudoku-grid > ul {
-  display: flex;
   width: 100%;
   height: 38px;
   border: 1px solid black;
@@ -49,7 +52,6 @@ body, .sudoku-grid-tile{
   width: 38px;
   height: 100%;
 
-  display: flex;
   justify-content: center;
   text-align: center;
   align-items: center;

@@ -113,7 +113,7 @@ class SudokuView {
     this.$inputs.on("click", this.handleSelect.bind(this));
   }
 
-  // change color of li(s) event according to which input is selected by the user (handleSelect)
+  // change color of lis event according to which input is selected by the user (handleSelect)
 
   handleSelect(event){
     this.removeSelectedLis();

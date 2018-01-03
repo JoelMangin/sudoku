@@ -513,311 +513,24 @@ module.exports = BoardSolver;
 
 /***/ }),
 /* 5 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__view_sudoku_view2_js__ = __webpack_require__(11);
 
 
-const SudokuView = __webpack_require__(6);
 const SudokuGame = __webpack_require__(3);
+
 
 $(()=> {
   const game = new SudokuGame();
-  new SudokuView(game);
-})
+  new __WEBPACK_IMPORTED_MODULE_0__view_sudoku_view2_js__["a" /* default */](game);
+});
 
 
 /***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const Sudoku = __webpack_require__(3);
-
-// purpose of this class:
-  // 1) Set a new grid build with <ul> and <li>
-  // 2) create all the events of the game and menu
-
-class SudokuView {
-  constructor(game){
-    this.game = game;
-
-    this.setHeaderEvents();
-    this.$displayHint = $(".display-hint");
-    this.$displayHint.on("click", this.displayHint.bind(this));
-
-    this.buildGrid();
-    this.setGridEvents();
-  }
-
-  setHeaderEvents(){
-    this.$headerLevel = $(".header-level");
-    this.$headerLevel.on("click", "li", this.selectLevel.bind(this));
-    this.$calculateSolution = $(".calculate-solution");
-    this.$calculateSolution.on("click", this.calculateSolution.bind(this));
-  }
-
-  // select level event method:
-
-  selectLevel(event){
-    const content = $(event.currentTarget).text();
-
-    switch(content){
-      case "Super Easy":
-        this.game = new Sudoku(15);
-        break;
-      case "Easy":
-        this.game = new Sudoku(25);
-        break;
-      case "Medium":
-        this.game = new Sudoku(35);
-        break;
-      case "Hard":
-        this.game = new Sudoku(45);
-        break;
-      case "Super Hard":
-        this.game = new Sudoku(55);
-        break;
-    }
-    this.cleanAfterSelectLevel(event);
-    this.render(this.game.board.getValues());
-  }
-
-  cleanAfterSelectLevel(event){
-    const $ulHeaderLevel = $(event.currentTarget).parent();
-    $ulHeaderLevel.addClass("no-display");
-    this.cleanNoDisplayHeaderLevel();
-    this.cleanHint()
-  }
-
-  cleanNoDisplayHeaderLevel(){
-    setTimeout(function(){
-      let $ul = $(".no-display");
-      $ul.removeClass("no-display");
-    }, 150);
-  }
-
-  cleanHint(){
-    let $ulHint = $(".hint");
-    let $button =$(".check-values");
-    $button.remove();
-    $ulHint.remove();
-    let $li = $(".display-hint");
-    $li.html("Display Hint");
-  }
-
-  // calculateSolution of the grid event method:
-
-  calculateSolution(){
-    this.render(this.game.solution);
-  }
-
-  // build Grid method:
-
-  buildGrid(){
-    const $sudokuGrid = $(".sudoku-grid");
-    this.game.board.getValues().forEach( (line, row) => {
-      let $ul = $("<ul></ul>");
-      this.buildLis(line, $ul, row);
-      $sudokuGrid.append($ul);
-    })
-  }
-
-  buildLis(line, ul, row){
-    line.forEach( (value, col)=> {
-      let $li = $("<li></li>");
-      $li.addClass(`li-${row}-${col} sudoku-grid-tile`);
-      if(value !==0 ){
-        $li.append(`${value}`);
-        $li.addClass("tile-blocked");
-      } else{
-        let $input = $("<input></input>");
-        $input.attr({type:"text", value: "" });
-        $li.append($input);
-      }
-      ul.append($li);
-    })
-  }
-
-  // set all the events on the grid
-
-  setGridEvents(){
-    this.$inputs = $(".sudoku-grid input[type= text]");
-    this.$inputs.change(this.handleChange.bind(this));
-    this.$inputs.on("click", this.handleSelect.bind(this));
-  }
-
-  // change color of li(s) event according to which input is selected by the user (handleSelect)
-
-  handleSelect(event){
-    this.removeSelectedLis();
-    const $li = $(event.currentTarget).parent();
-    const col = $li.attr("class")[5];
-    const $ul = $li.parent();
-    const $liLines = $ul.children();
-    $liLines.addClass("tile-selected");
-    for(let index=0; index < 9; index++){
-      const $li = $(".sudoku-grid").find(`.li-${index}-${col}`)
-            $li.addClass("tile-selected");
-    }
-  }
-
-  removeSelectedLis(){
-    const $selectedLi = $(".tile-selected");
-    if($selectedLi.length !== 0){
-      $selectedLi.removeClass("tile-selected");
-    }
-  }
-
-//method to handle user inputs on the grid: handleChange event
-
-    handleChange(event){
-      let $input = $(event.target);
-      let className = $input.parent().attr("class");
-      let pos = this.getPos(className);
-
-      let previousVal = this.game.board.getTile(pos).val;
-      let value = parseInt($input.val());
-      this.updateInputsVal(previousVal, value);
-          value = value !== value ? 0 : value;
-      this.game.board.updateVal(pos, value);
-      this.updateHint();
-      this.game.board.solved() ? this.printWinMessage() : false;
-
-    }
-
-    getPos(className){
-      let x = parseInt(className[3]);
-      let y = parseInt(className[5]);
-      return [x, y];
-    }
-
-    updateInputsVal(previousVal, value){
-      if( value !== value ){
-        this.game.inputsVal[previousVal] += 1;
-      } else if(this.game.board.valid(previousVal) && this.game.board.valid(value)){
-        this.game.inputsVal[previousVal] += 1;
-        this.game.inputsVal[value] -= 1;
-      }else if(this.game.board.valid(value)){
-        this.game.inputsVal[value] -= 1;
-      }
-    }
-
-    updateHint(){
-      const check = $(".display-hint").html();
-      if(check === "Hide Hint"){
-        let $ul = $(".hint");
-        $ul.remove();
-        this.buildHint();
-      }
-    }
-
-    printWinMessage(){
-      alert("Well played! You finished the grid!");
-    }
-
-
-// method to display the Hint event:
-
-  displayHint(event){
-    const $li = $(event.currentTarget);
-    this.handleHint($li.html());
-      if($li.html() === "Display Hint"){
-        $li.html("Hide Hint");
-      } else {
-        $li.html("Display Hint");
-      }
-  }
-
-  handleHint(value){
-     if(value === "Display Hint"){
-       this.buildHint();
-     } else {
-       let $ul = $(".hint");
-       let $button =$(".check-values");
-       $button.remove();
-       $ul.remove()
-     }
-  }
-
-  buildHint(){
-    const $sudokuGrid = $(".sudoku-grid");
-    let $ul = $("<ul></ul>");
-    $ul.addClass("hint");
-    for(let i = 1; i < 10; i++){
-      let $li = $("<li></li>");
-          $li.addClass("sudoku-grid-tile");
-      let num = this.game.inputsVal[i];
-      $li.html(`num${i} ${num}`)
-      $ul.append($li);
-    }
-    $sudokuGrid.append($ul);
-    this.buildCheckValuesButton();
-  }
-
-  buildCheckValuesButton(){
-    const $footer = $(".footer");
-    let $button = $("<button></button>")
-        $button.html("Check values");
-        $button.addClass("check-values");
-        $button.on("click", this.checkValues.bind(this));
-        $footer.append($button);
-  }
-
-  // methods for checkvalues event
-
-    checkValues(event){
-      this.updateConflictValues();
-      setTimeout(function(){
-        let $liConflict = $(".conflict-value");
-        $liConflict.removeClass("conflict-value");
-      }, 3000);
-    }
-
-    updateConflictValues(){
-      this.game.solution.forEach((line, row)=>{
-        line.forEach((value, col)=> {
-          let pos = [row, col];
-          let boardVal= this.game.board.getTile(pos).val;
-          if( boardVal !== 0 && boardVal !== value ){
-            console.log([value, boardVal]);
-            let $li = $(`.li-${row}-${col}`);
-            $li.addClass("conflict-value");
-          }
-        });
-      });
-    }
-
-
-  // methods to render an existing grid coming from the SelectLevel method:
-
-  render(grid){
-    grid.forEach((line, row)=> {
-      this.updateLis(line,row);
-    });
-  }
-
-  updateLis(line, row){
-    line.forEach((value, col) => {
-      let $li = $(`.li-${row}-${col}`);
-      $li.removeClass("tile-blocked tile-selected");
-      $li.html('');
-      if(value !== 0 ){
-        $li.html(`${value}`);
-        $li.addClass("tile-blocked");
-      } else{
-        let $input = $("<input></input>");
-            $input.attr({type:"text", value: "" });
-            $input.change(this.handleChange.bind(this));
-            $input.on("click", this.handleSelect.bind(this));
-        $li.append($input);
-      }
-    })
-  }
-
-}
-
-module.exports = SudokuView;
-
-
-/***/ }),
+/* 6 */,
 /* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1215,6 +928,378 @@ class SudokuSolver {
 
 
 module.exports = SudokuSolver;
+
+
+/***/ }),
+/* 10 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__sudoku_select_level_view_js__ = __webpack_require__(15);
+
+
+
+class SudokuGridView extends __WEBPACK_IMPORTED_MODULE_0__sudoku_select_level_view_js__["a" /* default */] {
+
+    constructor(game){
+      super(game);
+      this.buildGrid();
+      this.$inputs = $(".sudoku-grid input[type= text]");
+      this.$inputs.change(this.handleChange.bind(this));
+      // method coming from SudokuHintView class
+      this.$inputs.on("click", this.handleSelect.bind(this));
+      //
+    }
+
+    // method to build a new Grid (ul => lis).
+
+    buildGrid(){
+      const $sudokuGrid = $(".sudoku-grid");
+      this.game.board.getValues().forEach( (line, row) => {
+        let $ul = $("<ul></ul>");
+        this.buildLis(line, $ul, row);
+        $sudokuGrid.append($ul);
+      });
+    }
+
+    buildLis(line, ul, row){
+      line.forEach( (value, col)=> {
+        let $li = $("<li></li>");
+        $li.addClass(`li-${row}-${col} sudoku-grid-tile`);
+        if(value !==0 ){
+          $li.append(`${value}`);
+          $li.addClass("tile-blocked");
+        } else{
+          let $input = $("<input></input>");
+          $input.attr({type:"text", value: "" });
+          $li.append($input);
+        }
+        ul.append($li);
+      })
+    }
+
+
+    handleChange(event){
+      let $input = $(event.target);
+      let className = $input.parent().attr("class");
+      let pos = this.getPos(className);
+      let previousVal = this.game.board.getTile(pos).val;
+      let value = parseInt($input.val());
+      this.updateInputsVal(previousVal, value);
+          value = value !== value ? 0 : value;
+      this.game.board.updateVal(pos, value);
+      // method coming from SudokuHintView class
+      this.updateHint();
+      //
+      this.game.board.solved() ? this.printWinMessage() : false
+    }
+
+    getPos(className){
+      let x = parseInt(className[3]);
+      let y = parseInt(className[5]);
+      return [x, y];
+    }
+
+    updateInputsVal(previousVal, value){
+      if( value !== value ){
+        this.game.inputsVal[previousVal] += 1;
+      } else if(this.game.board.valid(previousVal) && this.game.board.valid(value)){
+        this.game.inputsVal[previousVal] += 1;
+        this.game.inputsVal[value] -= 1;
+      }else if(this.game.board.valid(value)){
+        this.game.inputsVal[value] -= 1;
+      }
+    }
+
+    printWinMessage(){
+      alert("Well played! You finished the grid!");
+    }
+
+  // methods to render a new BoardGrid from a new game created according to the level.
+
+    render(grid){
+      grid.forEach((line, row)=> {
+        this.updateLis(line,row);
+      });
+    }
+
+    updateLis(line, row){
+      line.forEach((value, col) => {
+        let $li = $(`.li-${row}-${col}`);
+        $li.removeClass("tile-blocked tile-selected");
+        $li.html('');
+        if(value !== 0 ){
+          $li.html(`${value}`);
+          $li.addClass("tile-blocked");
+        } else{
+          let $input = $("<input></input>");
+              $input.attr({type:"text", value: "" });
+              $input.change(this.handleChange.bind(this));
+              // method coming from SudokuHintView class
+              $input.on("click", this.handleSelect.bind(this));
+              //
+          $li.append($input);
+        }
+      })
+    }
+}
+
+
+/* harmony default export */ __webpack_exports__["a"] = (SudokuGridView);
+
+
+/***/ }),
+/* 11 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__sudoku_hint_view_js__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__sudoku_grid_view_js__ = __webpack_require__(10);
+
+
+
+
+class SudokuView2 {
+
+  constructor(game){
+    this.SudokuHintView = new __WEBPACK_IMPORTED_MODULE_0__sudoku_hint_view_js__["a" /* default */](game);
+  }
+
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (SudokuView2);
+
+
+/***/ }),
+/* 12 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__sudoku_grid_view_js__ = __webpack_require__(10);
+
+
+
+class SudokuHintView extends __WEBPACK_IMPORTED_MODULE_0__sudoku_grid_view_js__["a" /* default */] {
+
+  constructor(game){
+    super(game);
+    this.$displayHint = $(".display-hint");
+    this.$displayHint.on("click", this.displayHint.bind(this));
+  }
+
+
+  updateHint(){
+    const check = $(".display-hint").html();
+    if(check === "Hide Hint"){
+      let $ul = $(".hint");
+      $ul.remove();
+      this.buildHint();
+    }
+  }
+
+  buildHint(){
+    const $sudokuGrid = $(".sudoku-grid");
+    let $ul = $("<ul></ul>");
+    $ul.addClass("hint");
+    for(let i = 1; i < 10; i++){
+      let $li = $("<li></li>");
+          $li.addClass("sudoku-grid-tile");
+      let num = this.game.inputsVal[i];
+      $li.html(`num${i} ${num}`)
+      $ul.append($li);
+    }
+    $sudokuGrid.append($ul);
+  }
+
+
+  displayHint(event){
+    const $a = $(event.currentTarget).children();
+
+    this.handleHint($a.html());
+      if($a.html() === "Display Hint"){
+        $a.html("Hide Hint");
+      } else {
+        $a.html("Display Hint");
+      }
+  }
+
+  handleHint(value){
+     if(value === "Display Hint"){
+       this.buildHint();
+       this.buildCheckValuesButton();
+     } else {
+       let $ul = $(".hint");
+       let $button =$(".check-values");
+       $button.remove();
+       $ul.remove()
+     }
+  }
+
+// check value button methods:
+// ( update the backgoung color tile in red if false input value)
+
+  buildCheckValuesButton(){
+    const $footer = $(".footer");
+    let $button = $("<button></button>")
+    $button.html("Check values");
+    $button.addClass("check-values");
+    $button.on("click", this.checkValues.bind(this));
+    $footer.append($button);
+  }
+
+  checkValues(event){
+    this.updateConflictValues();
+    setTimeout(function(){
+      let $liConflict = $(".conflict-value");
+      $liConflict.removeClass("conflict-value");
+    }, 3000);
+  }
+
+  updateConflictValues(){
+    this.game.solution.forEach((line, row)=>{
+      line.forEach((value, col)=> {
+        let pos = [row, col];
+        let boardVal= this.game.board.getTile(pos).val;
+        if( boardVal !== 0 && boardVal !== value ){
+          let $li = $(`.li-${row}-${col}`);
+          $li.addClass("conflict-value");
+        }
+      });
+    });
+  }
+
+  //method to update tile color backgroung (green) when an input is selected
+
+
+    handleSelect(event){
+      this.removeSelectedLis();
+      const $li = $(event.currentTarget).parent();
+      const col = $li.attr("class")[5];
+      const $ul = $li.parent();
+      const $liLines = $ul.children();
+      $liLines.addClass("tile-selected");
+      for(let index=0; index < 9; index++){
+        const $li = $(".sudoku-grid").find(`.li-${index}-${col}`)
+              $li.addClass("tile-selected");
+      }
+    }
+
+    removeSelectedLis(){
+      const $selectedLi = $(".tile-selected");
+      if($selectedLi.length !== 0){
+        $selectedLi.removeClass("tile-selected");
+      }
+    }
+
+}
+
+ /* harmony default export */ __webpack_exports__["a"] = (SudokuHintView);
+
+
+/***/ }),
+/* 13 */,
+/* 14 */,
+/* 15 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__sudoku_calculate_solution_view_js__ = __webpack_require__(16);
+
+
+
+const Sudoku = __webpack_require__(3);
+
+class SudokuSelectLevelView extends __WEBPACK_IMPORTED_MODULE_0__sudoku_calculate_solution_view_js__["a" /* default */] {
+
+  constructor(game){
+    super(game)
+    this.$headerLevel = $(".header-level");
+    this.$headerLevel.on("click", "li", this.selectLevel.bind(this));
+
+  }
+
+  // select level and create a new game event method:
+
+  selectLevel(event){
+    const content = $(event.currentTarget).text();
+
+    switch(content){
+      case "Super Easy":
+        this.game = new Sudoku(15);
+        break;
+      case "Easy":
+        this.game = new Sudoku(25);
+        break;
+      case "Medium":
+        this.game = new Sudoku(35);
+        break;
+      case "Hard":
+        this.game = new Sudoku(45);
+        break;
+      case "Super Hard":
+        this.game = new Sudoku(55);
+        break;
+    }
+    this.cleanAfterSelectLevel(event);
+
+    // render() comes from SudokuGridView class.
+    this.render(this.game.board.getValues());
+  }
+
+  cleanAfterSelectLevel(event){
+    const $ulHeaderLevel = $(event.currentTarget).parent().parent();
+
+    $ulHeaderLevel.addClass("no-display");
+    this.cleanNoDisplayHeaderLevel();
+    this.cleanHint()
+  }
+
+  cleanNoDisplayHeaderLevel(){
+    setTimeout(function(){
+      let $ul = $(".no-display");
+      $ul.removeClass("no-display");
+    }, 150);
+  }
+
+  cleanHint(){
+    let $ulHint = $(".hint");
+    let $button =$(".check-values");
+    $button.remove();
+    $ulHint.remove();
+    let $li = $(".display-hint");
+    $li.children().html("Display Hint");
+  }
+
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (SudokuSelectLevelView);
+
+
+/***/ }),
+/* 16 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+
+
+class SudokuCalculateSolutionView {
+
+  constructor(game){
+    this.game = game;
+    this.$calculateSolution = $(".calculate-solution");
+    this.$calculateSolution.on("click", this.calculateSolution.bind(this));
+  }
+
+  // calculateSolution of the grid event method:
+
+  calculateSolution(){
+    // render() comes from SudokuGridView class.
+    this.render(this.game.solution);
+  }
+
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (SudokuCalculateSolutionView);
 
 
 /***/ })
