@@ -10,28 +10,30 @@ class SudokuHintView extends SudokuGridView {
   }
 
 
-  updateHint(){
-    const check = $(".display-hint").html();
-    if(check === "Hide Hint"){
-      let $ul = $(".hint");
-      $ul.remove();
-      this.buildHint();
-    }
-  }
+    updateHint(){
+    const check = $(".display-hint").children().html();
 
-  buildHint(){
-    const $sudokuGrid = $(".sudoku-grid");
-    let $ul = $("<ul></ul>");
-    $ul.addClass("hint");
-    for(let i = 1; i < 10; i++){
-      let $li = $("<li></li>");
-          $li.addClass("sudoku-grid-tile");
-      let num = this.game.inputsVal[i];
-      $li.html(`num${i} ${num}`)
-      $ul.append($li);
+      if(check === "Hide Hint"){
+        let $ul = $(".hint");
+        $ul.remove();
+        this.buildHint();
+      }
     }
-    $sudokuGrid.append($ul);
-  }
+
+
+    buildHint(){
+      const $sudokuGrid = $(".sudoku-grid");
+      let $ul = $("<ul></ul>");
+      $ul.addClass("hint");
+      for(let i = 1; i < 10; i++){
+        let $li = $("<li></li>");
+            $li.addClass("sudoku-grid-tile");
+        let num = this.game.inputsVal[i];
+        $li.html(`num${i} ${num}`)
+        $ul.append($li);
+      }
+      $sudokuGrid.append($ul);
+    }
 
 
   displayHint(event){
