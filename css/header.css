@@ -77,8 +77,13 @@
   top: 100%;
 }
 
+
 li:hover .header-level{
   display: block;
+}
+
+li:hover .no-display{
+  display: none;
 }
 
 .header-level > li{
@@ -98,8 +103,4 @@ li:hover .header-level{
 
 .header-level > li:hover{
   background-color: #C0C0C0;
-}
-
-li:hover .no-display{
-  display: none;
 }
