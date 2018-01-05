@@ -1058,8 +1058,12 @@ module.exports = SudokuSolver;
 
 
 
-class SudokuView {
+// chain inheritance explanations:
+// 1) SudokuHintView extends from SudokuGridView
+// 2) SudokuGridView extends from SudokuSelectLevelView
+// 3) SudokuSelectLevelView extends from SudokuCalculateSolutionView
 
+class SudokuView {
   constructor(game){
     this.SudokuHintView = new __WEBPACK_IMPORTED_MODULE_0__sudoku_hint_view_js__["a" /* default */](game);
   }
@@ -1242,11 +1246,11 @@ class SudokuSelectLevelView extends __WEBPACK_IMPORTED_MODULE_0__sudoku_calculat
 
     // render() comes from SudokuGridView class.
     this.render(this.game.board.getValues());
+    //
   }
 
   cleanAfterSelectLevel(event){
-    const $ulHeaderLevel = $(event.currentTarget).parent().parent();
-
+    const $ulHeaderLevel = $(event.currentTarget).parent();
     $ulHeaderLevel.addClass("no-display");
     this.cleanNoDisplayHeaderLevel();
     this.cleanHint()
@@ -1256,7 +1260,7 @@ class SudokuSelectLevelView extends __WEBPACK_IMPORTED_MODULE_0__sudoku_calculat
     setTimeout(function(){
       let $ul = $(".no-display");
       $ul.removeClass("no-display");
-    }, 150);
+    }, 200);
   }
 
   cleanHint(){

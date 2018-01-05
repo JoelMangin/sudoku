@@ -38,11 +38,11 @@ class SudokuSelectLevelView extends SudokuCalculateSolutionView {
 
     // render() comes from SudokuGridView class.
     this.render(this.game.board.getValues());
+    //
   }
 
   cleanAfterSelectLevel(event){
-    const $ulHeaderLevel = $(event.currentTarget).parent().parent();
-
+    const $ulHeaderLevel = $(event.currentTarget).parent();
     $ulHeaderLevel.addClass("no-display");
     this.cleanNoDisplayHeaderLevel();
     this.cleanHint()
@@ -52,7 +52,7 @@ class SudokuSelectLevelView extends SudokuCalculateSolutionView {
     setTimeout(function(){
       let $ul = $(".no-display");
       $ul.removeClass("no-display");
-    }, 150);
+    }, 200);
   }
 
   cleanHint(){
