@@ -155,7 +155,7 @@
   }
 
   .sudoku {
-    height: 800px;
+    height: 700px;
   }
 
   .sudoku-grid{
@@ -163,14 +163,19 @@
   }
 
 
-  .sudoku-grid > ul {
+  .sudoku-grid > ul, .hint {
     width: 450px;
     height: 50px;
   }
 
-  .sudoku-grid-tile, .hint li{
+  .sudoku-grid-tile {
     font-size: 18px;
   }
+
+  .hint li{
+    font-size: 16px;
+  }
+
 
   .sudoku-grid-tile{
     width: 50px;
@@ -188,13 +193,13 @@
   }
 
   .check-values{
-    top: -230px;
+    top: -130px;
     right: 180px;
 
     width: 200px;
     height: 40px;
 
-    font-size: 25px;
+    font-size: 20px;
     border-radius: 10px;
   }
 }
