@@ -139,19 +139,19 @@
   }
 
   .header-menu > li {
-    font-size: 30px;
+    font-size: 25px;
   }
 
   .sudoku-tag{
     left: 0px;
-    height: 80px;
+    height: 60px;
     width: 200px;
     transform: rotate(-25deg);
 
   }
 
   .sudoku-tag > span {
-    font-size: 35px;
+    font-size: 30px;
   }
 
   .sudoku {
