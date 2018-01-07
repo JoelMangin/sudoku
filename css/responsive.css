@@ -169,7 +169,7 @@
   }
 
   .sudoku-grid-tile, .hint li{
-    font-size: 20px;
+    font-size: 18px;
   }
 
   .sudoku-grid-tile{
