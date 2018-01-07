@@ -131,7 +131,7 @@
 @media screen and (min-width: 1220px) {
 
   .header-nav, .sudoku, .footer, .sudoku-grid{
-    width: 1200px;
+    width: 800px;
   }
 
   .header-nav{
@@ -144,31 +144,36 @@
 
   .sudoku-tag{
     left: 0px;
-    height: 100px;
-    width: 300px;
+    height: 80px;
+    width: 200px;
     transform: rotate(-25deg);
 
   }
 
   .sudoku-tag > span {
-    font-size: 45px;
+    font-size: 35px;
   }
 
   .sudoku {
-    height: 830px;
+    height: 800px;
   }
 
+  .sudoku-grid{
+    height: 450px;
+  }
+
+
   .sudoku-grid > ul {
-    width: 630px;
-    height: 70px;
+    width: 450px;
+    height: 50px;
   }
 
   .sudoku-grid-tile, .hint li{
-    font-size: 30px;
+    font-size: 20px;
   }
 
   .sudoku-grid-tile{
-    width: 70px;
+    width: 50px;
     height: 100%;
   }
 
@@ -183,10 +188,10 @@
   }
 
   .check-values{
-    top: -60px;
-    right: 280px;
+    top: -230px;
+    right: 180px;
 
-    width: 150spx;
+    width: 200px;
     height: 40px;
 
     font-size: 25px;
