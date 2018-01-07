@@ -155,12 +155,12 @@
   }
 
   .sudoku {
-    height: 1000px;
+    height: 830px;
   }
 
   .sudoku-grid > ul {
-    width: 784px;
-    height: 85px;
+    width: 630px;
+    height: 70px;
   }
 
   .sudoku-grid-tile, .hint li{
@@ -168,7 +168,7 @@
   }
 
   .sudoku-grid-tile{
-    width: 85px;
+    width: 70px;
     height: 100%;
   }
 
@@ -183,11 +183,11 @@
   }
 
   .check-values{
-    top: -80px;
-    right: 200px;
+    top: -60px;
+    right: 280px;
 
-    width: 250px;
-    height: 60px;
+    width: 150spx;
+    height: 40px;
 
     font-size: 25px;
     border-radius: 10px;
