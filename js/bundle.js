@@ -1063,6 +1063,7 @@ module.exports = SudokuSolver;
 // 2) SudokuGridView extends from SudokuSelectLevelView
 // 3) SudokuSelectLevelView extends from SudokuCalculateSolutionView
 
+
 class SudokuView {
   constructor(game){
     this.SudokuHintView = new __WEBPACK_IMPORTED_MODULE_0__sudoku_hint_view_js__["a" /* default */](game);
