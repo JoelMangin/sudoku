@@ -7,6 +7,7 @@ import SudokuGridView from "./sudoku_grid_view.js";
 // 2) SudokuGridView extends from SudokuSelectLevelView
 // 3) SudokuSelectLevelView extends from SudokuCalculateSolutionView
 
+
 class SudokuView {
   constructor(game){
     this.SudokuHintView = new SudokuHintView(game);
