@@ -1,4 +1,4 @@
-const Tile = require("./tile.js");
+import Tile from "./tile.js";
 
 // purpose of this class:
 // set of method created and use through all the different classes of the game
@@ -122,16 +122,18 @@ const Util = {
 
                                            positions2.forEach(pos2 => {
                                              hash[`${pos2}`] = true;
-                                           })
+                                           });
 
                                            positions1.forEach(pos1 => {
                                              if(!hash[`${pos1}`]){
                                               result.push(pos1);
                                              }
-                                           })
+                                           });
                                            return result;
                                         }
 }
 
+let positions1 = [[0,0], [1,2]];
 
-module.exports = Util;
+
+export default Util;

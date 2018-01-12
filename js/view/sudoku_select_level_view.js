@@ -1,7 +1,7 @@
 
 import SudokuCalculateSolutionView from "./sudoku_calculate_solution_view.js"
 
-const Sudoku = require("./../game/sudoku.js");
+import Sudoku from "./../game/sudoku.js";
 
 class SudokuSelectLevelView extends SudokuCalculateSolutionView {
 

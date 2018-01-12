@@ -1,5 +1,5 @@
-const Grid = require("./grid.js");
-const Util = require("./util.js");
+import Grid from "./grid.js";
+import Util from "./util.js";
 
 // purpose of this class:
 // 1) Build a grid ( take an existing grid or build a new one is none)
@@ -112,4 +112,4 @@ class Board {
   }
 }
 
-module.exports = Board;
+export default Board;
