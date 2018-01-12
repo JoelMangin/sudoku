@@ -1,6 +1,6 @@
 
-const Util = require("./../game/util.js");
-const Board = require("./../game/board.js");
+import Util from "./../game/util.js";
+import Board from "./../game/board.js";
 
 // purpose of this class:
 // 1) take the existing board and create a new Board with a deep copy of the previous grid
@@ -15,6 +15,7 @@ class BoardSolver{
   constructor(board, availablePositions = null){
     this.availablePositions = availablePositions === null ? board.boardGrid.availablePosistions : availablePositions;
     this.board = new Board( board.difficulty, Util.deepDup(board.boardGrid.grid));
+
     this.solvable = true;
     this.updateMarks();
   }
@@ -27,7 +28,6 @@ class BoardSolver{
   solved(){
     return this.board.solved();
   }
-
 
   updateMarks(){
     let positions = [];
@@ -47,16 +47,15 @@ class BoardSolver{
         update = true;
       }
     }
+
     this.updateAvailablePositions(update, positions);
   }
 
   updateAvailablePositions(update, positions){
     if(update){
       this.availablePositions = Util.update(this.availablePositions, positions);
-      this.updateMarks();
     }
   }
-
 
   possibleMarks(pos){
     let values = this.getLine(pos).concat(this.getCol(pos)).concat(this.getSquare(pos));
@@ -128,4 +127,4 @@ class BoardSolver{
   }
 }
 
-module.exports = BoardSolver;
+export default BoardSolver;

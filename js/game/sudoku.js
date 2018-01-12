@@ -1,6 +1,6 @@
-  const Board = require("./board.js");
-  const BoardSolver = require("./../solver/board_solver.js");
-  const SudokuSolver = require("./../solver/sudoku_solver.js");
+  import Board from "./board.js";
+  import BoardSolver from "./../solver/board_solver.js";
+  import SudokuSolver from "./../solver/sudoku_solver.js";
 
 // purpose of this class:
   // 1) Get one board
@@ -15,5 +15,4 @@ class Sudoku {
     this.solution = new SudokuSolver(boardSolver).solve();
   }
 }
-
-module.exports = Sudoku;
+export default Sudoku;

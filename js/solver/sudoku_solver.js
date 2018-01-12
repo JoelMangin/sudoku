@@ -1,12 +1,14 @@
 
-const BoardSolver = require("./board_solver.js");
-const Board = require("./../game/board.js");
-const Tile = require("./../game/tile.js");
+import BoardSolver from "./board_solver.js"
+import Board from "./../game/board.js"
+import Tile from "./../game/tile.js"
+import Util from "./../game/util.js"
 
 // Purpose of this class:
 // 1) Accept a boardSolver
 // 2) define the children of this boardSolver:
         // 2.1) get the next available position of the current boardSolver
+            // (position with less possible values)
         // 2.2) get the tile on the position
         // 2.3) Loop through each available marks of the tile
         // 2.4) Create a new boardSolver for each mark
@@ -38,7 +40,8 @@ class SudokuSolver {
 
     while(stack.length > 0){
       let currentBoard = stack.pop();
-      if(currentBoard.solved()){
+
+      if( currentBoard.availablePositions.length === 0){
         return currentBoard.board.getValues();
       }
       this.children(currentBoard).forEach( board => stack.push(board))
@@ -47,23 +50,39 @@ class SudokuSolver {
   }
 
   children(boardSolver){
-    let children = []
-    let nextAvailablePosition = boardSolver.availablePositions[0];
-    let positions = boardSolver.availablePositions.slice(1, boardSolver.availablePositions.length);
+    let children = [];
+    let nextAvailablePosition = this.getNextPos(boardSolver);
+    let positions = this.updatePositions(boardSolver, nextAvailablePosition);
     let tile = boardSolver.board.getTile(nextAvailablePosition);
 
     tile.marks.forEach((mark) => {
-
       let newBoardSolver = new BoardSolver(boardSolver.board, positions);
       newBoardSolver.updateTile(nextAvailablePosition, mark);
       if(newBoardSolver.solvable){
         children.push(newBoardSolver)
       }
-    })
+    });
     return children;
+  }
+
+  getNextPos(boardSolver){
+    let min = 10;
+    let result = [];
+    boardSolver.availablePositions.forEach((pos,idx) => {
+      let tile = boardSolver.board.getTile(pos);
+        if ( tile.marks.length !== 0 && tile.marks.length <= min){
+          min = tile.marks.length;
+          result = pos;
+        }
+    });
+    return result;
+  }
+
+  updatePositions( boardSolver, pos){
+    return Util.update(boardSolver.availablePositions, [pos]);
   }
 
 }
 
 
-module.exports = SudokuSolver;
+export default SudokuSolver;

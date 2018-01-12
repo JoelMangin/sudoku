@@ -1,6 +1,6 @@
-const solvedSudoku = require("./../../existing_sudoku/solved_sudokus.js");
-const Tile = require("./tile.js");
-const Util = require("./util.js");
+import solvedSudoku from "./../../existing_sudoku/solved_sudokus.js";
+import Tile from "./tile.js";
+import Util from "./util.js";
 
 
 // Purpose of this class:
@@ -108,4 +108,4 @@ class Grid {
 
 }
 
-module.exports = Grid;
+export default Grid;
