@@ -9,7 +9,6 @@ class SudokuHintView extends SudokuGridView {
     this.$displayHint.on("click", this.displayHint.bind(this));
   }
 
-
     updateHint(){
     const check = $(".display-hint").children().html();
 
@@ -19,7 +18,6 @@ class SudokuHintView extends SudokuGridView {
         this.buildHint();
       }
     }
-
 
     buildHint(){
       const $sudokuGrid = $(".sudoku-grid");
@@ -93,7 +91,17 @@ class SudokuHintView extends SudokuGridView {
   }
 
   //method to update tile color backgroung (green) when an input is selected
-
+    // buildSelectTileButton(){
+    //   let $button = $("<button> </button>");
+    //       $button.html("Viewer helper");
+    //       $button.addClass("viewer-helper");
+    //       $button.on("click", () => {
+    //         let allInputs = $(":input");
+    //           allInputs.on("click", this.handleSelect.bind(this)) ;
+    //       });
+    //   const $footer = $(".footer");
+    //         $footer.append($button);
+    // }
 
     handleSelect(event){
       this.removeSelectedLis();

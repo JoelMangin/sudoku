@@ -33,7 +33,7 @@ class SudokuGridView extends SudokuSelectLevelView {
           $li.addClass("tile-blocked");
         } else{
           let $input = $("<input></input>");
-          $input.attr({type:"text", value: "" });
+          $input.attr({type:"text", value:"", maxlength:"1" });
           $li.append($input);
         }
         ul.append($li);
@@ -44,6 +44,7 @@ class SudokuGridView extends SudokuSelectLevelView {
     handleChange(event){
       let $input = $(event.target);
       let className = $input.parent().attr("class");
+      this.checkInput($input.val());
       let pos = this.getPos(className);
       let previousVal = this.game.board.getTile(pos).val;
       let value = parseInt($input.val());
@@ -73,6 +74,15 @@ class SudokuGridView extends SudokuSelectLevelView {
       }
     }
 
+    checkInput(val){
+      let correctValues = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
+      if( val === ""){
+        return
+      } else if( !correctValues.includes(val) ){
+        alert("Please, enter a value between 0 and 9.");
+      }
+    }
+
     printWinMessage(){
       alert("Well played! You finished the grid!");
     }
@@ -95,7 +105,7 @@ class SudokuGridView extends SudokuSelectLevelView {
           $li.addClass("tile-blocked");
         } else{
           let $input = $("<input></input>");
-              $input.attr({type:"text", value: "" });
+              $input.attr({type:"text", value: "", maxlength: "1" });
               $input.change(this.handleChange.bind(this));
               // method coming from SudokuHintView class
               $input.on("click", this.handleSelect.bind(this));
