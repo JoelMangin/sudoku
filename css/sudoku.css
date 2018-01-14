@@ -6,11 +6,11 @@ body, .sudoku-grid-tile{
   background-color: #CCC;
 }
 
-.tile-selected {
+/*.tile-selected {
   background-color: #CCFFE5;
-}
+}*/
 
-.check-values{
+.check-values, .tile-selected{
   background-color: #89fcb7;
 }
 

@@ -60,175 +60,11 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 6);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__view_sudoku_view_js__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__game_sudoku_js__ = __webpack_require__(5);
- 
- 
-
- $(()=> {
-   let game = new __WEBPACK_IMPORTED_MODULE_1__game_sudoku_js__["a" /* default */]();
-   new __WEBPACK_IMPORTED_MODULE_0__view_sudoku_view_js__["a" /* default */](game);
- });
-
-
-/***/ }),
-/* 1 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__grid_js__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__util_js__ = __webpack_require__(3);
-
-
-
-// purpose of this class:
-// 1) Build a grid ( take an existing grid or build a new one is none)
-// 2) save difficulty (number of tile with a value of 0)
-//    and the inputsVal( hash: {1: 2, 3: 4 etc..})
-// 2) Provide a solved method to check if the grid is solved
-// 3) update the grid according to correct input => val is a number and a num between 0 and 9
-
-class Board {
-
-  constructor(difficulty, grid = null){
-    this.difficulty = difficulty;
-    this.boardGrid = new __WEBPACK_IMPORTED_MODULE_0__grid_js__["a" /* default */](difficulty, grid);
-    this.inputsVal = this.boardGrid.inputsVal;
-  }
-
-  getValues(){
-    return this.boardGrid.getValues();
-  }
-
-  updateVal(pos, val){
-
-    let tile = this.getTile(pos);
-    if(!tile.blocked && this.valid(val)){
-      tile.val = val;
-    } else if ( !(val !== val)) {
-      alert("Please, enter a value between 0 and 9.")
-    }
-  }
-
-  getTile(pos){
-    let x = pos[0];
-    let y = pos[1];
-    return this.boardGrid.grid[x][y];
-  }
-
-  valid(val){
-    return Number.isInteger(val) && val >= 0 && val <= 9;
-  }
-
-  // method to divide the grid values into squares
-
-
-  getAllSquares(){
-    let squares = [];
-    [0, 3, 6].forEach((indexCol) => {
-      this.getThreeSquaresIndexCol(indexCol).forEach((square) => {
-        squares.push(square);
-      })
-    })
-    return squares;
-  }
-
-  getThreeSquaresIndexCol(indexCol){
-    let squares = [];
-    let square = [];
-    this.boardGrid.getValues().forEach((line, index)=> {
-      square.push( line.slice(indexCol, indexCol+3));
-      if((index + 1) % 3 === 0){
-        squares.push(square);
-        square = [];
-      }
-    })
-    return squares;
-  }
-
-  //methods to check if the board is solved!
-
-  solved(){
-    return this.checkLinesColsBoard() && this.checkSquares();
-  }
-
-  checkSquares(){
-    let result = true;
-    this.getAllSquares().forEach(square => {
-      if (!this.checkSquare(square)){
-        result = false;
-      }
-    })
-    return result;
-  }
-
-
-  checkSquare(square){
-    let line = __WEBPACK_IMPORTED_MODULE_1__util_js__["a" /* default */].flatten(square);
-    return this.check(line);
-  }
-
-  checkLinesColsBoard(){
-    let grid = this.boardGrid.getValues();
-    let transposeGrid = __WEBPACK_IMPORTED_MODULE_1__util_js__["a" /* default */].transpose(grid);
-    return this.checkLines(grid) && this.checkLines(transposeGrid);
-  }
-
-  check(line){
-    const b = __WEBPACK_IMPORTED_MODULE_1__util_js__["a" /* default */].mergeSort(line);
-      if (b[0] === 0) {
-        return false;
-      }
-    return __WEBPACK_IMPORTED_MODULE_1__util_js__["a" /* default */].similar(b , [1,2,3,4,5,6,7,8,9]);
-  }
-
-  checkLines(grid1){
-    grid1.forEach((line) => {
-      if (!this.check(line)) {
-        return false;
-      }
-    })
-    return true;
-  }
-}
-
-/* harmony default export */ __webpack_exports__["a"] = (Board);
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-
-// purpose of this class:
-// Well it s a tile object which hold three characteristics:
-  //  1) tile is blocked (meaning we can t change the value of the tile)
-  //  2) the value of the tile
-   // 3) possible values of this tile according to the grid (this.marks)
-
-class Tile {
-  constructor(val, blocked = true){
-    this.val = val;
-    this.blocked =  val === null ? false : blocked ;
-    this.marks = [];
-  }
-}
-
-/* harmony default export */ __webpack_exports__["a"] = (Tile);
-
-
-/***/ }),
-/* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -375,7 +211,149 @@ let positions1 = [[0,0], [1,2]];
 
 
 /***/ }),
-/* 4 */
+/* 1 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__grid_js__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__util_js__ = __webpack_require__(0);
+
+
+
+// purpose of this class:
+// 1) Build a grid ( take an existing grid or build a new one is none)
+// 2) save difficulty (number of tile with a value of 0)
+//    and the inputsVal( hash: {1: 2, 3: 4 etc..})
+// 2) Provide a solved method to check if the grid is solved
+// 3) update the grid according to correct input => val is a number and a num between 0 and 9
+
+class Board {
+
+  constructor(difficulty, grid = null){
+    this.difficulty = difficulty;
+    this.boardGrid = new __WEBPACK_IMPORTED_MODULE_0__grid_js__["a" /* default */](difficulty, grid);
+    this.inputsVal = this.boardGrid.inputsVal;
+  }
+
+  getValues(){
+    return this.boardGrid.getValues();
+  }
+
+  updateVal(pos, val){
+    let tile = this.getTile(pos);
+    if(!tile.blocked && this.valid(val)){
+      tile.val = val;
+    }
+  }
+
+  getTile(pos){
+    let x = pos[0];
+    let y = pos[1];
+    return this.boardGrid.grid[x][y];
+  }
+
+  valid(val){
+    return Number.isInteger(val) && val >= 0 && val <= 9;
+  }
+
+  // method to divide the grid values into squares
+
+  getAllSquares(){
+    let squares = [];
+    [0, 3, 6].forEach((indexCol) => {
+      this.getThreeSquaresIndexCol(indexCol).forEach((square) => {
+        squares.push(square);
+      })
+    })
+    return squares;
+  }
+
+  getThreeSquaresIndexCol(indexCol){
+    let squares = [];
+    let square = [];
+    this.boardGrid.getValues().forEach((line, index)=> {
+      square.push( line.slice(indexCol, indexCol+3));
+      if((index + 1) % 3 === 0){
+        squares.push(square);
+        square = [];
+      }
+    })
+    return squares;
+  }
+
+  //methods to check if the board is solved!
+
+  solved(){
+    return this.checkLinesColsBoard() && this.checkSquares();
+  }
+
+  checkSquares(){
+    let result = true;
+    this.getAllSquares().forEach(square => {
+      if (!this.checkSquare(square)){
+        result = false;
+      }
+    })
+    return result;
+  }
+
+  checkSquare(square){
+    let line = __WEBPACK_IMPORTED_MODULE_1__util_js__["a" /* default */].flatten(square);
+    return this.check(line);
+  }
+
+  checkLinesColsBoard(){
+    let grid = this.boardGrid.getValues();
+    let transposeGrid = __WEBPACK_IMPORTED_MODULE_1__util_js__["a" /* default */].transpose(grid);
+    return this.checkLines(grid) && this.checkLines(transposeGrid);
+  }
+
+  check(line){
+    const b = __WEBPACK_IMPORTED_MODULE_1__util_js__["a" /* default */].mergeSort(line);
+      if (b[0] === 0) {
+        return false;
+      }
+    return __WEBPACK_IMPORTED_MODULE_1__util_js__["a" /* default */].similar(b , [1,2,3,4,5,6,7,8,9]);
+  }
+
+  checkLines(grid1){
+    grid1.forEach((line) => {
+      if (!this.check(line)) {
+        return false;
+      }
+    })
+    return true;
+  }
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (Board);
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+
+// purpose of this class:
+// Well it s a tile object which hold three characteristics:
+  //  1) tile is blocked (meaning we can t change the value of the tile)
+  //  2) the value of the tile
+   // 3) possible values of this tile according to the grid (this.marks)
+
+class Tile {
+  constructor(val, blocked = true){
+    this.val = val;
+    this.blocked =  val === null ? false : blocked ;
+    this.marks = [];
+  }
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (Tile);
+
+
+/***/ }),
+/* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -415,7 +393,7 @@ class SudokuGridView extends __WEBPACK_IMPORTED_MODULE_0__sudoku_select_level_vi
           $li.addClass("tile-blocked");
         } else{
           let $input = $("<input></input>");
-          $input.attr({type:"text", value: "" });
+          $input.attr({type:"text", value:"", maxlength:"1" });
           $li.append($input);
         }
         ul.append($li);
@@ -426,6 +404,7 @@ class SudokuGridView extends __WEBPACK_IMPORTED_MODULE_0__sudoku_select_level_vi
     handleChange(event){
       let $input = $(event.target);
       let className = $input.parent().attr("class");
+      this.checkInput($input.val());
       let pos = this.getPos(className);
       let previousVal = this.game.board.getTile(pos).val;
       let value = parseInt($input.val());
@@ -455,6 +434,15 @@ class SudokuGridView extends __WEBPACK_IMPORTED_MODULE_0__sudoku_select_level_vi
       }
     }
 
+    checkInput(val){
+      let correctValues = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
+      if( val === ""){
+        return
+      } else if( !correctValues.includes(val) ){
+        alert("Please, enter a value between 0 and 9.");
+      }
+    }
+
     printWinMessage(){
       alert("Well played! You finished the grid!");
     }
@@ -477,7 +465,7 @@ class SudokuGridView extends __WEBPACK_IMPORTED_MODULE_0__sudoku_select_level_vi
           $li.addClass("tile-blocked");
         } else{
           let $input = $("<input></input>");
-              $input.attr({type:"text", value: "" });
+              $input.attr({type:"text", value: "", maxlength: "1" });
               $input.change(this.handleChange.bind(this));
               // method coming from SudokuHintView class
               $input.on("click", this.handleSelect.bind(this));
@@ -493,13 +481,13 @@ class SudokuGridView extends __WEBPACK_IMPORTED_MODULE_0__sudoku_select_level_vi
 
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__board_js__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__solver_board_solver_js__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__solver_sudoku_solver_js__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__solver_board_solver_js__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__solver_sudoku_solver_js__ = __webpack_require__(14);
   
   
   
@@ -521,11 +509,11 @@ class Sudoku {
 
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__game_util_js__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__game_util_js__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__game_board_js__ = __webpack_require__(1);
 
 
@@ -660,12 +648,29 @@ class BoardSolver{
 
 
 /***/ }),
+/* 6 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__view_sudoku_view_js__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__game_sudoku_js__ = __webpack_require__(4);
+ 
+ 
+
+ $(()=> {
+   let game = new __WEBPACK_IMPORTED_MODULE_1__game_sudoku_js__["a" /* default */]();
+   new __WEBPACK_IMPORTED_MODULE_0__view_sudoku_view_js__["a" /* default */](game);
+ });
+
+
+/***/ }),
 /* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__sudoku_hint_view_js__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__sudoku_grid_view_js__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__sudoku_grid_view_js__ = __webpack_require__(3);
 
 
 
@@ -689,7 +694,7 @@ class SudokuView {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__sudoku_grid_view_js__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__sudoku_grid_view_js__ = __webpack_require__(3);
 
 
 
@@ -701,7 +706,6 @@ class SudokuHintView extends __WEBPACK_IMPORTED_MODULE_0__sudoku_grid_view_js__[
     this.$displayHint.on("click", this.displayHint.bind(this));
   }
 
-
     updateHint(){
     const check = $(".display-hint").children().html();
 
@@ -711,7 +715,6 @@ class SudokuHintView extends __WEBPACK_IMPORTED_MODULE_0__sudoku_grid_view_js__[
         this.buildHint();
       }
     }
-
 
     buildHint(){
       const $sudokuGrid = $(".sudoku-grid");
@@ -785,7 +788,17 @@ class SudokuHintView extends __WEBPACK_IMPORTED_MODULE_0__sudoku_grid_view_js__[
   }
 
   //method to update tile color backgroung (green) when an input is selected
-
+    // buildSelectTileButton(){
+    //   let $button = $("<button> </button>");
+    //       $button.html("Viewer helper");
+    //       $button.addClass("viewer-helper");
+    //       $button.on("click", () => {
+    //         let allInputs = $(":input");
+    //           allInputs.on("click", this.handleSelect.bind(this)) ;
+    //       });
+    //   const $footer = $(".footer");
+    //         $footer.append($button);
+    // }
 
     handleSelect(event){
       this.removeSelectedLis();
@@ -818,7 +831,7 @@ class SudokuHintView extends __WEBPACK_IMPORTED_MODULE_0__sudoku_grid_view_js__[
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__sudoku_calculate_solution_view_js__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__game_sudoku_js__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__game_sudoku_js__ = __webpack_require__(4);
 
 
 
@@ -918,14 +931,15 @@ class SudokuCalculateSolutionView {
 
 
 /***/ }),
-/* 11 */
+/* 11 */,
+/* 12 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__existing_sudoku_solved_sudokus_js__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__existing_sudoku_solved_sudokus_js__ = __webpack_require__(13);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__existing_sudoku_solved_sudokus_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__existing_sudoku_solved_sudokus_js__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__tile_js__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__util_js__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__util_js__ = __webpack_require__(0);
 
 
 
@@ -1040,7 +1054,7 @@ class Grid {
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports) {
 
 const solvedSudokus = ["123456789547819362968273154219645873684732591375198426451967238792381645836524917",
@@ -1248,14 +1262,14 @@ module.exports = solvedSudokus;
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__board_solver_js__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__board_solver_js__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__game_board_js__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__game_tile_js__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__game_util_js__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__game_util_js__ = __webpack_require__(0);
 
 
 

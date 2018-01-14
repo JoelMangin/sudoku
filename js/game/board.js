@@ -21,12 +21,9 @@ class Board {
   }
 
   updateVal(pos, val){
-
     let tile = this.getTile(pos);
     if(!tile.blocked && this.valid(val)){
       tile.val = val;
-    } else if ( !(val !== val)) {
-      alert("Please, enter a value between 0 and 9.")
     }
   }
 
@@ -41,7 +38,6 @@ class Board {
   }
 
   // method to divide the grid values into squares
-
 
   getAllSquares(){
     let squares = [];
@@ -81,7 +77,6 @@ class Board {
     })
     return result;
   }
-
 
   checkSquare(square){
     let line = Util.flatten(square);
