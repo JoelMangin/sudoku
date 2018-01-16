@@ -215,7 +215,7 @@ let positions1 = [[0,0], [1,2]];
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__grid_js__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__grid_js__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__util_js__ = __webpack_require__(0);
 
 
@@ -487,7 +487,7 @@ class SudokuGridView extends __WEBPACK_IMPORTED_MODULE_0__sudoku_select_level_vi
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__board_js__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__solver_board_solver_js__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__solver_sudoku_solver_js__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__solver_sudoku_solver_js__ = __webpack_require__(13);
   
   
   
@@ -534,11 +534,18 @@ class BoardSolver{
     this.board = new __WEBPACK_IMPORTED_MODULE_1__game_board_js__["a" /* default */]( board.difficulty, __WEBPACK_IMPORTED_MODULE_0__game_util_js__["a" /* default */].deepDup(board.boardGrid.grid));
 
     this.solvable = true;
-    this.updateMarks();
+    this.updateDatas();
+  }
+
+  updateDatas(){
+    this.lines = this.board.boardGrid.getValues();
+    this.columns = __WEBPACK_IMPORTED_MODULE_0__game_util_js__["a" /* default */].transpose(this.board.boardGrid.getValues());
+    this.squares = this.board.getAllSquares();
   }
 
   updateTile(pos, val){
-    this.board.updateVal(pos, val)
+    this.board.updateVal(pos, val);
+    this.updateDatas();
     this.updateMarks();
   }
 
@@ -588,19 +595,17 @@ class BoardSolver{
 
   getLine(pos){
     let x = pos[0];
-    return this.board.boardGrid.getValues()[x];
+    return this.lines[x];
   }
 
   getCol(pos){
-    let transpose = __WEBPACK_IMPORTED_MODULE_0__game_util_js__["a" /* default */].transpose(this.board.boardGrid.getValues());
     let y = pos[1];
-    return transpose[y];
+    return this.columns[y];
   }
 
   getSquare(pos){
-    let squares = this.board.getAllSquares();
     let index = this.getIndexSquare(pos);
-    return __WEBPACK_IMPORTED_MODULE_0__game_util_js__["a" /* default */].flatten(squares[index]);
+    return __WEBPACK_IMPORTED_MODULE_0__game_util_js__["a" /* default */].flatten(this.squares[index]);
   }
 
   getLineIndexSquare(pos){
@@ -867,6 +872,12 @@ class SudokuSelectLevelView extends __WEBPACK_IMPORTED_MODULE_0__sudoku_calculat
       case "Super Hard":
         this.game = new __WEBPACK_IMPORTED_MODULE_1__game_sudoku_js__["a" /* default */](55);
         break;
+      case "Nightmare":
+        this.game = new __WEBPACK_IMPORTED_MODULE_1__game_sudoku_js__["a" /* default */](65);
+        break;
+      case "Lol":
+        this.game = new __WEBPACK_IMPORTED_MODULE_1__game_sudoku_js__["a" /* default */](77);
+        break;
     }
     this.cleanAfterSelectLevel(event);
 
@@ -931,12 +942,11 @@ class SudokuCalculateSolutionView {
 
 
 /***/ }),
-/* 11 */,
-/* 12 */
+/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__existing_sudoku_solved_sudokus_js__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__existing_sudoku_solved_sudokus_js__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__existing_sudoku_solved_sudokus_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__existing_sudoku_solved_sudokus_js__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__tile_js__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__util_js__ = __webpack_require__(0);
@@ -1054,7 +1064,7 @@ class Grid {
 
 
 /***/ }),
-/* 13 */
+/* 12 */
 /***/ (function(module, exports) {
 
 const solvedSudokus = ["123456789547819362968273154219645873684732591375198426451967238792381645836524917",
@@ -1262,7 +1272,7 @@ module.exports = solvedSudokus;
 
 
 /***/ }),
-/* 14 */
+/* 13 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1305,6 +1315,7 @@ class SudokuSolver {
   constructor(boardSolver){
     this.positions = boardSolver.availablePositions;
     this.root = boardSolver;
+    this.root.updateMarks();
   }
 
   solve(){

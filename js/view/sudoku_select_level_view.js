@@ -33,6 +33,12 @@ class SudokuSelectLevelView extends SudokuCalculateSolutionView {
       case "Super Hard":
         this.game = new Sudoku(55);
         break;
+      case "Nightmare":
+        this.game = new Sudoku(65);
+        break;
+      case "Lol":
+        this.game = new Sudoku(77);
+        break;
     }
     this.cleanAfterSelectLevel(event);
 
