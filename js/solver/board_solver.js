@@ -17,11 +17,18 @@ class BoardSolver{
     this.board = new Board( board.difficulty, Util.deepDup(board.boardGrid.grid));
 
     this.solvable = true;
-    this.updateMarks();
+    this.updateDatas();
+  }
+
+  updateDatas(){
+    this.lines = this.board.boardGrid.getValues();
+    this.columns = Util.transpose(this.board.boardGrid.getValues());
+    this.squares = this.board.getAllSquares();
   }
 
   updateTile(pos, val){
-    this.board.updateVal(pos, val)
+    this.board.updateVal(pos, val);
+    this.updateDatas();
     this.updateMarks();
   }
 
@@ -71,19 +78,17 @@ class BoardSolver{
 
   getLine(pos){
     let x = pos[0];
-    return this.board.boardGrid.getValues()[x];
+    return this.lines[x];
   }
 
   getCol(pos){
-    let transpose = Util.transpose(this.board.boardGrid.getValues());
     let y = pos[1];
-    return transpose[y];
+    return this.columns[y];
   }
 
   getSquare(pos){
-    let squares = this.board.getAllSquares();
     let index = this.getIndexSquare(pos);
-    return Util.flatten(squares[index]);
+    return Util.flatten(this.squares[index]);
   }
 
   getLineIndexSquare(pos){

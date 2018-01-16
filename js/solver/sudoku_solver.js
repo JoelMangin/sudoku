@@ -20,7 +20,7 @@ import Util from "./../game/util.js"
 // 5) keep going while the stack is not empty or if we find a solution
 
 // Pros and cons:
-  // Pros: boardSolver are already simpilied (singeton value updated)
+  // Pros: boardSolver are already simplified (singeton value updated)
         // which accelerate the process of finding a solution.
  //  Cons: we create  new board for each tile.marks
         // which could be a lot of boards on high difficulty (bad space complexity and
@@ -33,6 +33,7 @@ class SudokuSolver {
   constructor(boardSolver){
     this.positions = boardSolver.availablePositions;
     this.root = boardSolver;
+    this.root.updateMarks();
   }
 
   solve(){
