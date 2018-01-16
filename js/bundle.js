@@ -875,7 +875,7 @@ class SudokuSelectLevelView extends __WEBPACK_IMPORTED_MODULE_0__sudoku_calculat
       case "Nightmare":
         this.game = new __WEBPACK_IMPORTED_MODULE_1__game_sudoku_js__["a" /* default */](65);
         break;
-      case "Lol":
+      case "Demo solver":
         this.game = new __WEBPACK_IMPORTED_MODULE_1__game_sudoku_js__["a" /* default */](77);
         break;
     }
@@ -1302,7 +1302,7 @@ module.exports = solvedSudokus;
 // 5) keep going while the stack is not empty or if we find a solution
 
 // Pros and cons:
-  // Pros: boardSolver are already simpilied (singeton value updated)
+  // Pros: boardSolver are already simplified (singeton value updated)
         // which accelerate the process of finding a solution.
  //  Cons: we create  new board for each tile.marks
         // which could be a lot of boards on high difficulty (bad space complexity and
